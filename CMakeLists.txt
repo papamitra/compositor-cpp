@@ -32,5 +32,6 @@ target_link_libraries(compositor
 add_custom_command(
   OUTPUT ${CMAKE_SOURCE_DIR}/server-protocol.h ${CMAKE_SOURCE_DIR}/server-protocol.cpp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  DEPENDS ${CMAKE_SOURCE_DIR}/create_interface.py
   COMMAND "python3" "create_interface.py" "/usr/share/wayland/wayland.xml" "server-protocol"
 )
