@@ -31,7 +31,7 @@
 
 namespace karuta {
 
-Compositor::Compositor(Display& display)
+Compositor::Compositor(wl::Display& display)
     : display_(display) {
     using namespace std::placeholders;
 
@@ -39,8 +39,17 @@ Compositor::Compositor(Display& display)
                            std::bind(&Compositor::bind, this, _1, _2, _3));
 }
 
-void Compositor::bind(Client& client, uint32_t version, uint32_t id) {
-    std::unique_ptr<Resource> resource = client.resource_create(&wl_compositor_interface, version, id);
+void Compositor::create_surface(wl::Client& client, wl::Resource& resource,
+                                uint32_t id) {
+    
+}
+
+void Compositor::create_region(wl::Client& client, wl::Resource& resource,
+                               uint32_t id) {
+}
+
+void Compositor::bind(wl::Client& client, uint32_t version, uint32_t id) {
+    std::unique_ptr<wl::Resource> resource = client.resource_create(&wl_compositor_interface, version, id);
 
     resource->set_implementation(*this);
 }

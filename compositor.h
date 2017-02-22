@@ -27,19 +27,27 @@
 
 #include "server-protocol.h"
 
-namespace karuta {
-
+namespace wl {
 class Display;
 class Client;
+}
 
-class Compositor : public CompositorInterface {
-    Display& display_;
+namespace karuta {
+
+class Compositor : public wl::CompositorInterface {
+    wl::Display& display_;
 
 public:
-    Compositor(Display& display);
+    Compositor(wl::Display& display);
+
+    void create_surface(wl::Client& client, wl::Resource& resource,
+                        uint32_t id) override;
+
+    void create_region(wl::Client& client, wl::Resource& resource,
+                       uint32_t id) override;
 
 private:
-    void bind(Client& client, uint32_t version, uint32_t id);
+    void bind(wl::Client& client, uint32_t version, uint32_t id);
 };
 
 }  // karuta

@@ -27,7 +27,7 @@
 
 #include <wayland-server.h>
 
-namespace karuta {
+namespace wl {
 
 struct ImplInterface {
     virtual void resource_destroy() {}
@@ -39,14 +39,17 @@ class Resource {
     ImplInterface* impl_;
 
 public:
-    Resource(struct wl_resource* resource)
-        : resource_(resource) {}
+    Resource(struct wl_resource* resource) : resource_(resource) {}
 
     // FIXME: delete resource_ ??
     ~Resource() {}
 
     void set_implementation(ImplInterface& impl);
-    ImplInterface* get_implementation() { return impl_;}
+    ImplInterface* get_implementation() { return impl_; }
+
+    uint32_t get_version() const {
+        return wl_resource_get_version(resource_);
+    }
 };
 
-}  // karuta
+}  // wl

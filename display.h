@@ -29,10 +29,10 @@
 
 #include "global.h"
 
-namespace karuta {
+namespace wl {
 
 using global_bind_func_t =
-    std::function<void(Client&, uint32_t /* version */, uint32_t /* id */)>;
+    std::function<void(class Client&, uint32_t /* version */, uint32_t /* id */)>;
 
 struct Global {
     global_bind_func_t bind_func;
@@ -52,4 +52,4 @@ public:
                        global_bind_func_t bind_func);
 };
 
-}  // karuta
+}  // wl

@@ -27,9 +27,7 @@
 
 int main(int argc, char *argv[])
 {
-    using namespace karuta;
-
-    Display disp;
+    wl::Display disp;
 
     disp.run();
 
