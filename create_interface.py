@@ -36,7 +36,9 @@ private:
 {member_funcs}
 public:
 {static_funcs}
-{get_implementation}
+{get_interface}
+{get_wl_interface}
+{version}
 }};
 """
 
@@ -132,13 +134,14 @@ def parse_request(req):
 
 def parse_interface(intf):
     name = intf.attrib['name']
+    version = intf.attrib.get('version', 0)
     reqs = []
     for child in intf:
         if child.tag == 'request':
             reqs.append(parse_request(child))
-    return (name, reqs)
+    return (name, version, reqs)
 
-def create_interface_instance(name, reqs):
+def create_interface_instance(name, version, reqs):
     if len(reqs) == 0: return ""
     s = 'struct {ifname}_interface {ifname}_interface_instance = {{'.format(ifname=name)
     for (funcname, args) in reqs:
@@ -146,20 +149,34 @@ def create_interface_instance(name, reqs):
     s += '\n};'
     return s
 
-def to_get_impl(name):
+def to_get_interface(name):
     return """\
     void* get_interface() override {{
         extern struct {name}_interface {name}_interface_instance;
         return static_cast<void*>(&{name}_interface_instance);
     }}""".format(name=name)
 
+def to_get_wl_interface(name):
+    return """\
+    static const struct wl_interface* get_wl_interface() {{
+        extern const struct wl_interface {name}_interface;
+        return &::{name}_interface;
+    }}""".format(name=name)
+
+def to_version(ver):
+    return """\
+    static const uint32_t version = {version};
+    """.format(version=ver)
+
 def create_interface(intf):
-    (name, reqs) = intf
+    (name, version, reqs) = intf
     s = ""
     s += class_format.format(classname=to_class_name(name),
                              member_funcs=to_member_funcs(reqs),
                              static_funcs=to_static_funcs(name, reqs),
-                             get_implementation="" if len(reqs) == 0 else to_get_impl(name)
+                             get_interface="" if len(reqs) == 0 else to_get_interface(name),
+                             get_wl_interface=to_get_wl_interface(name),
+                             version=to_version(version)
     )
     return s
 

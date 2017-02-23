@@ -38,9 +38,6 @@ class Resource {
 public:
     Resource(struct wl_resource* resource) : resource_(resource) {}
 
-    // FIXME: delete resource_ ??
-    ~Resource() {}
-
     void set_implementation(ImplInterface& impl);
     ImplInterface* get_implementation() { return impl_; }
 

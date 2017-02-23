@@ -23,25 +23,31 @@
  * SOFTWARE.
  */
 
-#include "compositor.h"
+#pragma once
+
+#include <wayland-server.h>
 
 #include "display.h"
 #include "resource.h"
 #include "client.h"
 
-#include <functional>
-#include <memory>
-
 namespace karuta::wl {
 
-Compositor::Compositor(wl::Display& display)
-    : GlobalInstance(display), display_(display) {
-}
+    template <typename T>
+    class GlobalInstance {
+    protected:
+        GlobalInstance(Display& display) {
+            using namespace std::placeholders;
+            display.global_create(
+                T::get_wl_interface(), T::version,
+                std::bind(&GlobalInstance::bind, this, _1, _2, _3));
+        }
 
-void Compositor::create_surface(uint32_t id) {
-}
-
-void Compositor::create_region(uint32_t id) {
-}
+        void bind(Client& client, uint32_t version, uint32_t id) {
+            auto resource =
+                client.resource_create(T::get_wl_interface(), version, id);
+            resource->set_implementation(*reinterpret_cast<ImplInterface*>(this));
+        }
+    };
 
 }  // karuta::wl

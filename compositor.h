@@ -27,6 +27,8 @@
 
 #include "server-protocol.h"
 
+#include "global_instance.h"
+
 namespace karuta::wl {
 class Display;
 class Client;
@@ -34,7 +36,7 @@ class Client;
 
 namespace karuta::wl {
 
-class Compositor : public wl::CompositorInterface {
+class Compositor : public wl::CompositorInterface, GlobalInstance<Compositor> {
     wl::Display& display_;
 
 public:
@@ -43,9 +45,6 @@ public:
     void create_surface(uint32_t id) override;
 
     void create_region(uint32_t id) override;
-
-private:
-    void bind(wl::Client& client, uint32_t version, uint32_t id);
 };
 
 }  // karuta::wl
