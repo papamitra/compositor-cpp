@@ -27,7 +27,7 @@
 
 #include <wayland-server.h>
 
-#include "global.h"
+#include <functional>
 
 namespace karuta::wl {
 
