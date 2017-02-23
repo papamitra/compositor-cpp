@@ -31,23 +31,23 @@
 #include "resource.h"
 #include "client.h"
 
-namespace karuta::wl {
+#include "create_instance.h"
 
-    template <typename T>
-    class GlobalInstance {
-    protected:
-        GlobalInstance(Display& display) {
-            using namespace std::placeholders;
-            display.global_create(
-                T::get_wl_interface(), T::version,
-                std::bind(&GlobalInstance::bind, this, _1, _2, _3));
-        }
+namespace karuta {
 
-        void bind(Client& client, uint32_t version, uint32_t id) {
-            auto resource =
-                client.resource_create(T::get_wl_interface(), version, id);
-            resource->set_implementation(*reinterpret_cast<ImplInterface*>(this));
-        }
-    };
+template <typename T>
+class GlobalInstance : public CreateInstance<T> {
+protected:
+    GlobalInstance(wl::Display& display) {
+        using namespace std::placeholders;
+        display.global_create(
+            T::get_wl_interface(), T::version,
+            std::bind(&GlobalInstance::bind, this, _1, _2, _3));
+    }
+
+    void bind(wl::Client& client, uint32_t version, uint32_t id) {
+        this->create(client, version, id);
+    }
+};
 
 }  // karuta::wl

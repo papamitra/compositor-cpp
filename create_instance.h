@@ -23,27 +23,21 @@
  * SOFTWARE.
  */
 
-#include "compositor.h"
+#pragma once
 
-#include "display.h"
-#include "resource.h"
 #include "client.h"
-
-#include <functional>
-#include <memory>
+#include "resource.h"
 
 namespace karuta {
-namespace wl {
 
-Compositor::Compositor(wl::Display& display)
-    : GlobalInstance(display), display_(display) {
-}
+template <typename T>
+class CreateInstance {
+protected:
+    void create(wl::Client& client, uint32_t version, uint32_t id) {
+        auto resource =
+            client.resource_create(T::get_wl_interface(), version, id);
+        resource->set_implementation(*static_cast<T*>(this));
+    }
+};
 
-void Compositor::create_surface(uint32_t id) {
-}
-
-void Compositor::create_region(uint32_t id) {
-}
-
-}  // wl
-}  // karuta::wl
+}  // karuta

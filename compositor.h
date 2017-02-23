@@ -30,13 +30,15 @@
 #include "global_instance.h"
 
 namespace karuta::wl {
-class Display;
-class Client;
+    class Display;
+    class Client;
 }
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
 
-class Compositor : public wl::CompositorInterface, GlobalInstance<Compositor> {
+class Compositor : public CompositorInterface,
+                   public GlobalInstance<Compositor> {
     wl::Display& display_;
 
 public:
@@ -47,4 +49,5 @@ public:
     void create_region(uint32_t id) override;
 };
 
+}  // wl
 }  // karuta::wl
