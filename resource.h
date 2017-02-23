@@ -27,12 +27,9 @@
 
 #include <wayland-server.h>
 
-namespace wl {
+#include "impl_interface.h"
 
-struct ImplInterface {
-    virtual void resource_destroy() {}
-    virtual void* get_interface() { return nullptr; }
-};
+namespace karuta::wl {
 
 class Resource {
     struct wl_resource* resource_;
@@ -52,4 +49,4 @@ public:
     }
 };
 
-}  // wl
+}  // karuta::wl

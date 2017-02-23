@@ -29,7 +29,7 @@
 
 #include <functional>
 
-namespace wl {
+namespace karuta::wl {
 
 void global_bind(wl_client* client, void* data, uint32_t version, uint32_t id) {
     auto global = static_cast<Global*>(data);
@@ -45,4 +45,4 @@ Global* Display::global_create(const struct wl_interface* interface,
     return global;
 }
 
-}  // wl
+}  // karuta::wl

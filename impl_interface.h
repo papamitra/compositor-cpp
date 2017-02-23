@@ -25,12 +25,11 @@
 
 #pragma once
 
-#include <wayland-server.h>
+namespace karuta {
 
-#include <functional>
+struct ImplInterface {
+    virtual void resource_destroy() {}
+    virtual void* get_interface() { return nullptr; }
+};
 
-namespace karuta::wl {
-
-class Client;
-
-}  // karuta
+} // karuta

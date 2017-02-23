@@ -26,10 +26,13 @@
 #include "compositor.h"
 
 #include "display.h"
+#include "resource.h"
+#include "client.h"
 
 #include <functional>
+#include <memory>
 
-namespace karuta {
+namespace karuta::wl {
 
 Compositor::Compositor(wl::Display& display)
     : display_(display) {
@@ -39,19 +42,17 @@ Compositor::Compositor(wl::Display& display)
                            std::bind(&Compositor::bind, this, _1, _2, _3));
 }
 
-void Compositor::create_surface(wl::Client& client, wl::Resource& resource,
-                                uint32_t id) {
-    
+void Compositor::create_surface(uint32_t id) {
 }
 
-void Compositor::create_region(wl::Client& client, wl::Resource& resource,
-                               uint32_t id) {
+void Compositor::create_region(uint32_t id) {
 }
 
 void Compositor::bind(wl::Client& client, uint32_t version, uint32_t id) {
-    std::unique_ptr<wl::Resource> resource = client.resource_create(&wl_compositor_interface, version, id);
+    std::unique_ptr<wl::Resource> resource =
+        client.resource_create(&wl_compositor_interface, version, id);
 
     resource->set_implementation(*this);
 }
 
-}  // karuta
+}  // karuta::wl

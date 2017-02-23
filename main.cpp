@@ -27,7 +27,7 @@
 
 int main(int argc, char *argv[])
 {
-    wl::Display disp;
+    karuta::wl::Display disp;
 
     disp.run();
 

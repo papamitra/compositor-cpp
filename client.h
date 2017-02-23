@@ -29,7 +29,7 @@
 
 #include <memory>
 
-namespace wl {
+namespace karuta::wl {
 
 class Resource;
 
@@ -44,4 +44,4 @@ public:
         const struct wl_interface* interface, uint32_t version, uint32_t id);
 };
 
-}  // wl
+}  // karuta::wl
