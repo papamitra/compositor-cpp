@@ -39,10 +39,10 @@ Compositor::Compositor(wl::Display& display)
     : GlobalInstance(display), display_(display) {
 }
 
-void Compositor::create_surface(uint32_t id) {
+void Compositor::create_surface(Client& client, Resource& resource, uint32_t id) {
 }
 
-void Compositor::create_region(uint32_t id) {
+void Compositor::create_region(Client& client, Resource& resource, uint32_t id) {
 }
 
 }  // wl

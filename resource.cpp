@@ -24,19 +24,19 @@
  */
 
 #include "resource.h"
+#include "impl_interface.h"
 
 namespace karuta {
 namespace wl {
 
 static void destroy_resource(struct wl_resource* resource) {
-    Resource* res = static_cast<Resource*>(wl_resource_get_user_data(resource));
-    res->get_implementation()->resource_destroy();
+    ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
+    impl->destroy();
 }
 
-void Resource::set_implementation(karuta::ImplInterface& impl) {
-    impl_ = &impl;
-    wl_resource_set_implementation(resource_, impl_->get_interface(),
-                                   this, destroy_resource);
+void Resource::set_implementation(ImplInterface& impl) {
+    wl_resource_set_implementation(resource_, impl.get_interface(),
+                                   &impl, destroy_resource);
 }
 
 }  // wl

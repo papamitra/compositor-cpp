@@ -33,18 +33,18 @@ namespace karuta {
 namespace wl {
 
 class Resource {
+    // DO NOT have other member than resource_.
     struct wl_resource* resource_;
-    ImplInterface* impl_;
+
+    Resource(const Resource&) = delete;
 
 public:
-    Resource(struct wl_resource* resource) : resource_(resource) {}
+    Resource(struct wl_resource* resource)
+        : resource_(resource) {}
 
     void set_implementation(ImplInterface& impl);
-    ImplInterface* get_implementation() { return impl_; }
 
-    uint32_t get_version() const {
-        return wl_resource_get_version(resource_);
-    }
+    uint32_t get_version() const { return wl_resource_get_version(resource_); }
 };
 
 }  // wl

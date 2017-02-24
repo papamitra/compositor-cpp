@@ -28,7 +28,7 @@
 namespace karuta {
 
 struct ImplInterface {
-    virtual void resource_destroy() {}
+    virtual void destroy() {}
     virtual void* get_interface() { return nullptr; }
 };
 

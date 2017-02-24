@@ -31,12 +31,15 @@
 #include "resource.h"
 #include "client.h"
 
-#include "create_instance.h"
+#include <memory>
+#include <set>
 
 namespace karuta {
 
 template <typename T>
-class GlobalInstance : public CreateInstance<T> {
+class GlobalInstance {
+    std::set<wl::Resource*> rs_;
+
 protected:
     GlobalInstance(wl::Display& display) {
         wl_global_create(display.get_wl_display(), T::get_wl_interface(),
@@ -44,17 +47,28 @@ protected:
                          &global_bind);
     }
 
-    virtual std::unique_ptr<wl::Resource> bind(wl::Client& client,
-                                               uint32_t version, uint32_t id) {
-        return this->create(client, version, id);
+    virtual wl::Resource& bind(wl::Client& client,
+                               uint32_t version, uint32_t id) {
+        auto resource =
+            client.resource_create(T::get_wl_interface(), version, id);
+        resource->set_implementation(*static_cast<T*>(this));
+        auto resp = resource.release();
+        rs_.insert(resp);
+        return *resp;
     }
 
 private:
+
+    void bind_(wl::Client& client,
+              uint32_t version, uint32_t id) {
+        bind(client, version, id);
+    }
+
     static void global_bind(wl_client* client, void* data, uint32_t version,
                             uint32_t id) {
         auto self = static_cast<GlobalInstance*>(data);
         wl::Client c(client);
-        self->bind(c, version, id);
+        self->bind_(c, version, id);
     }
 };
 

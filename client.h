@@ -35,6 +35,7 @@ namespace wl {
 class Resource;
 
 class Client {
+    // DO NOT have other member than client_.
     wl_client* client_;
 
 public:
