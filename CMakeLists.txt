@@ -4,11 +4,10 @@ project (compositor)
 
 file(GLOB SOURCE
   ${CMAKE_SOURCE_DIR}/*.cpp
-  ${CMAKE_SOURCE_DIR}/server-protocol.cpp
 )
 
 add_executable(compositor ${SOURCE})
-#add_dependencies(compositor server-protocol)
+add_dependencies(compositor server-protocol)
 
 find_package(PkgConfig)
 find_package(X11 REQUIRED)
@@ -34,4 +33,8 @@ add_custom_command(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   DEPENDS ${CMAKE_SOURCE_DIR}/create_interface.py
   COMMAND "python3" "create_interface.py" "/usr/share/wayland/wayland.xml" "server-protocol"
+)
+
+add_custom_target(server-protocol
+    DEPENDS ${CMAKE_SOURCE_DIR}/server-protocol.h ${CMAKE_SOURCE_DIR}/server-protocol.cpp
 )
