@@ -195,9 +195,11 @@ def create_pre_define(tree):
 
     s = ""
     for (ns, cs) in predefs.items():
-        s += '\nnamespace karuta::' + ns + ' {'
+        s += '\nnamespace karuta {'
+        s += '\nnamespace ' + ns + ' {'
         for c in cs:
             s += '\n    class ' + c + ';'
+        s += '\n}'
         s += '\n}\n'
     return s
 
