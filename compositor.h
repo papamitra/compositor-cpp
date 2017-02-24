@@ -29,9 +29,11 @@
 
 #include "global_instance.h"
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
     class Display;
     class Client;
+}
 }
 
 namespace karuta {
@@ -50,4 +52,4 @@ public:
 };
 
 }  // wl
-}  // karuta::wl
+}  // karuta

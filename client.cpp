@@ -27,7 +27,8 @@
 
 #include "resource.h"
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
 
 std::unique_ptr<Resource> Client::resource_create(const struct wl_interface* interface,
                                  uint32_t version, uint32_t id) {
@@ -40,4 +41,5 @@ std::unique_ptr<Resource> Client::resource_create(const struct wl_interface* int
     return std::make_unique<Resource>(resource);
 }
 
-}  // karuta::wl
+}  // wl
+}  // karuta

@@ -46,4 +46,4 @@ void Compositor::create_region(uint32_t id) {
 }
 
 }  // wl
-}  // karuta::wl
+}  // karuta
