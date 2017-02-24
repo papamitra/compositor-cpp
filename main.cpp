@@ -24,10 +24,14 @@
  */
 
 #include "display.h"
+#include "compositor.h"
 
 int main(int argc, char *argv[])
 {
-    karuta::wl::Display disp;
+    using namespace karuta::wl;
+
+    Display disp;
+    Compositor comp(disp);
 
     disp.run();
 

@@ -39,15 +39,23 @@ template <typename T>
 class GlobalInstance : public CreateInstance<T> {
 protected:
     GlobalInstance(wl::Display& display) {
-        using namespace std::placeholders;
-        display.global_create(
-            T::get_wl_interface(), T::version,
-            std::bind(&GlobalInstance::bind, this, _1, _2, _3));
+        wl_global_create(display.get_wl_display(), T::get_wl_interface(),
+                         static_cast<int>(T::version), static_cast<void*>(this),
+                         &global_bind);
     }
 
-    void bind(wl::Client& client, uint32_t version, uint32_t id) {
-        this->create(client, version, id);
+    virtual std::unique_ptr<wl::Resource> bind(wl::Client& client,
+                                               uint32_t version, uint32_t id) {
+        return this->create(client, version, id);
+    }
+
+private:
+    static void global_bind(wl_client* client, void* data, uint32_t version,
+                            uint32_t id) {
+        auto self = static_cast<GlobalInstance*>(data);
+        wl::Client c(client);
+        self->bind(c, version, id);
     }
 };
 
-}  // karuta::wl
+}  // karuta

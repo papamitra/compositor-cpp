@@ -25,7 +25,8 @@
 
 #include "resource.h"
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
 
 static void destroy_resource(struct wl_resource* resource) {
     Resource* res = static_cast<Resource*>(wl_resource_get_user_data(resource));
@@ -38,4 +39,5 @@ void Resource::set_implementation(karuta::ImplInterface& impl) {
                                    this, destroy_resource);
 }
 
+}  // wl
 }  // karuta::wl

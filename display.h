@@ -29,15 +29,8 @@
 
 #include <functional>
 
-namespace karuta::wl {
-
-using global_bind_func_t =
-    std::function<void(class Client&, uint32_t /* version */, uint32_t /* id */)>;
-
-struct Global {
-    global_bind_func_t bind_func;
-    wl_global* global;
-};
+namespace karuta {
+namespace wl {
 
 class Display {
     wl_display* const display_;
@@ -48,8 +41,8 @@ public:
 
     void run() { wl_display_run(display_); }
 
-    Global* global_create(const struct wl_interface* interface, int version,
-                       global_bind_func_t bind_func);
+    wl_display* get_wl_display() { return display_; }
 };
 
+}  // wl
 }  // karuta::wl

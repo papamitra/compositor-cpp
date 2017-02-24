@@ -33,10 +33,11 @@ namespace karuta {
 template <typename T>
 class CreateInstance {
 protected:
-    void create(wl::Client& client, uint32_t version, uint32_t id) {
+    std::unique_ptr<wl::Resource> create(wl::Client& client, uint32_t version, uint32_t id) {
         auto resource =
             client.resource_create(T::get_wl_interface(), version, id);
         resource->set_implementation(*static_cast<T*>(this));
+        return resource;
     }
 };
 

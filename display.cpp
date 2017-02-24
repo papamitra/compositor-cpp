@@ -29,20 +29,8 @@
 
 #include <functional>
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
 
-void global_bind(wl_client* client, void* data, uint32_t version, uint32_t id) {
-    auto global = static_cast<Global*>(data);
-    Client c(client);
-    global->bind_func(c, version, id);
-}
-
-Global* Display::global_create(const struct wl_interface* interface,
-                               int version, global_bind_func_t bind_func) {
-    auto global = new Global{bind_func, nullptr};
-    global->global =
-        wl_global_create(display_, interface, version, global, global_bind);
-    return global;
-}
-
+}  // wl
 }  // karuta::wl

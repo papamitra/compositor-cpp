@@ -29,7 +29,8 @@
 
 #include "impl_interface.h"
 
-namespace karuta::wl {
+namespace karuta {
+namespace wl {
 
 class Resource {
     struct wl_resource* resource_;
@@ -46,4 +47,5 @@ public:
     }
 };
 
+}  // wl
 }  // karuta::wl
