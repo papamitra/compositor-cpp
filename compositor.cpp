@@ -29,6 +29,8 @@
 #include "resource.h"
 #include "client.h"
 
+#include "surface.h"
+
 #include <functional>
 #include <memory>
 
@@ -39,10 +41,13 @@ Compositor::Compositor(wl::Display& display)
     : GlobalInstance(display), display_(display) {
 }
 
-void Compositor::create_surface(Client& client, Resource& resource, uint32_t id) {
+void Compositor::create_surface(Client& client, Resource& resource,
+                                uint32_t id) {
+    Surface::create(client, resource.get_version(), id);
 }
 
-void Compositor::create_region(Client& client, Resource& resource, uint32_t id) {
+void Compositor::create_region(Client& client, Resource& resource,
+                               uint32_t id) {
 }
 
 }  // wl

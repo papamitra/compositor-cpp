@@ -25,30 +25,16 @@
 
 #pragma once
 
-#include "client.h"
-#include "resource.h"
-
-#include <functional>
+#include <cstdio>
 
 namespace karuta {
 
-template <typename T>
-class Instance {
-    wl::Resource* res_;
-
-protected:
-    Instance(wl::Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
-    }
-
-public:
-    template<typename... Args>
-    static void create(Args&&... args) {
-        auto p = new T(std::forward<Args>(args)...);
-    }
-};
+__attribute__ ((format(printf, 1, 2)))
+int debug(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    return vprintf(fmt, ap);
+    va_end(ap);
+}
 
 }  // karuta

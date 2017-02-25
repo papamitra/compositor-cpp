@@ -23,32 +23,21 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "surface.h"
+#include "util.h"
 
-#include "client.h"
-#include "resource.h"
-
-#include <functional>
+#include <cstdio>
 
 namespace karuta {
+namespace wl {
 
-template <typename T>
-class Instance {
-    wl::Resource* res_;
+Surface::Surface(wl::Client& client, uint32_t version, uint32_t id)
+    : Instance(client, version, id) {
+}
 
-protected:
-    Instance(wl::Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
-    }
+void Surface::frame(Client& client, Resource& resource, uint32_t callback) {
+    debug(__func__);
+}
 
-public:
-    template<typename... Args>
-    static void create(Args&&... args) {
-        auto p = new T(std::forward<Args>(args)...);
-    }
-};
-
+}  // wl
 }  // karuta
