@@ -48,6 +48,18 @@ public:
 }};
 """
 
+static_function = """
+    static void {reqname}_(
+        struct wl_client* client,
+        struct wl_resource* resource{args}) {{
+
+        Client client_(client);
+        Resource resource_(resource);{to_class}
+
+        auto p = static_cast<{classname}*>(wl_resource_get_user_data(resource));
+        p->{reqname}(client_, resource_ {call_args});
+    }}"""
+
 def usage():
     print("""
 usage: create_interface.py input_file [output_prefix]
@@ -108,31 +120,28 @@ def to_static_funcs(ifname, reqs):
 
 def to_static_func(ifname, name, args):
     classname = to_class_name(ifname) + 'Interface'
-    s = '    static void ' + name + '_('
-    s += '\n        struct wl_client* client'
-    s += ',\n        struct wl_resource* resource'
-    for arg in args:
-        s += ',\n        ' + to_c_type(arg) + ' ' + arg.attrib['name']
-    s += ') {'
-    s += '\n            auto p = static_cast<{classname}*>(wl_resource_get_user_data(resource));'.format(classname=classname)
-    s += '\n            Client client_(client);'
-    s += '\n            Resource resource_(resource);'
+
+    args_str = ''.join([',\n        ' + to_c_type(arg) + ' ' + arg.attrib['name'] for arg in args])
+
+    to_class = ''
     for arg in args:
         if arg.attrib['type'] == 'object' and arg.attrib['interface'] not in acceptable_interface:
             (ns, cname) = to_ns_and_class(arg.attrib['interface'])
-            s += '\n            auto {name}_ = ({ns}::{cname}*)wl_resource_get_user_data((wl_resource*)({name}));'.format(ns=ns, cname=cname, name=arg.attrib['name'])
-    s += '\n            p->{func_name}('.format(func_name=name)
+            to_class += '\n        auto {name}_ = ({ns}::{cname}*)wl_resource_get_user_data((wl_resource*)({name}));'.format(ns=ns, cname=cname, name=arg.attrib['name'])
+
     def to_arg_name(arg):
         if arg.attrib['type'] == 'object' and arg.attrib['interface'] not in acceptable_interface:
             return arg.attrib['name'] + '_'
         else:
             return arg.attrib['name']
 
-    args_str = ','.join(map(to_arg_name, args))
-    s += 'client_, resource_' if args_str == '' else 'client_, resource_,' + args_str
-    s += ');'
-    s += '\n    }\n'
-    return s
+    call_args = ''.join([' ,' + to_arg_name(arg) for arg in args])
+
+    return static_function.format(reqname=name,
+                                  args=args_str,
+                                  classname=classname,
+                                  to_class=to_class,
+                                  call_args=call_args)
 
 def parse_request(req):
     name = req.attrib['name']
