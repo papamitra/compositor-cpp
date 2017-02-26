@@ -30,11 +30,23 @@
 namespace karuta {
 
 __attribute__ ((format(printf, 1, 2)))
-int debug(const char* fmt, ...) {
+static int debug(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    return vprintf(fmt, ap);
+    printf("[Debug] ");
+    auto ret = vprintf(fmt, ap);
     va_end(ap);
+    return ret;
+}
+
+__attribute__ ((format(printf, 1, 2)))
+static int error(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    printf("[Error] ");
+    auto ret = vprintf(fmt, ap);
+    va_end(ap);
+    return ret;
 }
 
 }  // karuta

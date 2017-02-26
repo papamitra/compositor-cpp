@@ -24,13 +24,24 @@
  */
 
 #include "display.h"
-
 #include "client.h"
+#include "util.h"
 
 #include <functional>
 
 namespace karuta {
 namespace wl {
 
+void Display::run() {
+    const char* socket_name = wl_display_add_socket_auto(display_);
+    if (!socket_name) {
+        error("listen failed\n");
+        exit(1);
+    }
+
+    setenv("WAYLAND_DISPLAY", socket_name, 1);
+
+    wl_display_run(display_);
+}
 }  // wl
 }  // karuta::wl

@@ -39,9 +39,10 @@ public:
     Display()
         : display_(wl_display_create()) {}
 
-    void run() { wl_display_run(display_); }
+    void run();
 
     wl_display* get_wl_display() { return display_; }
+
 };
 
 }  // wl
