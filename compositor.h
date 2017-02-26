@@ -46,6 +46,8 @@ class Compositor : public CompositorInterface,
 public:
     Compositor(wl::Display& display);
 
+    void init();
+
     void create_surface(Client& client, Resource& resource, uint32_t id) override;
 
     void create_region(Client& client, Resource& resource, uint32_t id) override;

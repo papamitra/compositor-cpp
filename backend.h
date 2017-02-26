@@ -32,4 +32,6 @@ public:
     virtual void init()=0;
 };
 
+using create_backend_func_t = Backend*(*)();
+
 }  // karuta

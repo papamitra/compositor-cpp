@@ -25,6 +25,7 @@ target_link_libraries(compositor
   ${X11_LIBRARIES}
   ${EGL_LIBRARIES}
   ${GLES2_LIBRARIES}
+  -ldl
   )
 
 # FIXME: wayland.xml path

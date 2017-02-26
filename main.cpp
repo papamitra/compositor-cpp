@@ -25,15 +25,25 @@
 
 #include "display.h"
 #include "compositor.h"
+#include "log.h"
+
+#include <new>
 
 int main(int argc, char *argv[])
 {
     using namespace karuta::wl;
 
-    Display disp;
-    Compositor comp(disp);
+    try {
+        Display display;
+        Compositor compositor(display);
 
-    disp.run();
+        compositor.init();
+
+        display.run();
+    } catch (const std::bad_alloc& e) {
+        karuta::error("bad alloc: %s\n", e.what());
+        exit(1);
+    }
 
     return 0;
 }

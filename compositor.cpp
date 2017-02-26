@@ -28,17 +28,27 @@
 #include "display.h"
 #include "resource.h"
 #include "client.h"
-
 #include "surface.h"
+#include "backend.h"
 
 #include <functional>
 #include <memory>
+#include <cassert>
+#include <dlfcn.h>
 
 namespace karuta {
 namespace wl {
 
 Compositor::Compositor(wl::Display& display)
     : GlobalInstance(display), display_(display) {
+}
+
+void Compositor::init() {
+    void* const module = dlopen("backend/x11/backend-x11.so", RTLD_NOW);
+    auto* const init = reinterpret_cast<create_backend_func_t>(dlsym(module, "karuta_create_backend"));
+
+    assert(init);
+    assert(!init());
 }
 
 void Compositor::create_surface(Client& client, Resource& resource,
