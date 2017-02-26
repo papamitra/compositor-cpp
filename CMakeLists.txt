@@ -38,3 +38,5 @@ add_custom_command(
 add_custom_target(server-protocol
     DEPENDS ${CMAKE_SOURCE_DIR}/server-protocol.h ${CMAKE_SOURCE_DIR}/server-protocol.cpp
 )
+
+add_subdirectory(backend/x11)
