@@ -25,7 +25,7 @@
 
 #include "display.h"
 #include "client.h"
-#include "util.h"
+#include "log.h"
 
 #include <functional>
 

@@ -24,7 +24,7 @@
  */
 
 #include "surface.h"
-#include "util.h"
+#include "log.h"
 
 #include <cstdio>
 
