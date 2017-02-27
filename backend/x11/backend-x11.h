@@ -27,16 +27,33 @@
 
 #include "../../backend.h"
 
+#include <X11/Xlib.h>
+#include <X11/Xlib-xcb.h>
 #include <xcb/xcb.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 namespace karuta {
 
 class BackendX11 : public Backend {
+    Display *display_;
     xcb_connection_t *conn_;
     xcb_screen_t *screen_;
     xcb_window_t window_;
+
+    EGLDisplay egl_display_;
+	EGLConfig egl_config_;
+
 public:
+    BackendX11();
+
     bool init() override;
+
+private:
+    bool egl_init();
+
+    bool egl_choose_config(const EGLint *attribs, const EGLint *visual_id,
+                           const int n_ids, EGLConfig *config_out);
 };
 
 }  // karuta

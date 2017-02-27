@@ -24,15 +24,24 @@
  */
 
 #include "backend-x11.h"
-
 #include "log.h"
 
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <cstdlib>
+
 namespace karuta {
+
+BackendX11::BackendX11()
+    : egl_display_(EGL_NO_DISPLAY) {
+}
 
 bool BackendX11::init() {
     // FIXME: error handling.
 
-    conn_ = xcb_connect(NULL, NULL);
+    display_ = XOpenDisplay(NULL);
+
+    conn_ = XGetXCBConnection(display_);
     if (!conn_) {
         error("xcb_connect() failed");
         return false;
@@ -52,13 +61,113 @@ bool BackendX11::init() {
 
     xcb_flush(conn_);
 
+    if (!egl_init()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool BackendX11::egl_init() {
+    auto get_platform_display =
+        reinterpret_cast<PFNEGLGETPLATFORMDISPLAYEXTPROC>(
+            eglGetProcAddress("eglGetPlatformDisplayEXT"));
+    if (get_platform_display) {
+        egl_display_ =
+            get_platform_display(EGL_PLATFORM_X11_KHR, display_, NULL);
+    }
+
+    if (egl_display_ == EGL_NO_DISPLAY) {
+        error("failed to create display\n");
+        return false;
+    }
+
+    EGLint major, minor;
+    if (!eglInitialize(egl_display_, &major, &minor)) {
+        error("faile to initialize display\n");
+        return false;
+    }
+
+    static const EGLint opaque_attribs[] = {
+        EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,      //
+        EGL_RED_SIZE,        1,                   //
+        EGL_GREEN_SIZE,      1,                   //
+        EGL_BLUE_SIZE,       1,                   //
+        EGL_ALPHA_SIZE,      0,                   //
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,  //
+        EGL_NONE};
+
+    if (!egl_choose_config(opaque_attribs, NULL, 0, &egl_config_)) {
+        error("faile to choose EGL config\n");
+        return false;
+    }
+
+    return true;
+}
+
+static int match_config_to_visual(EGLDisplay egl_display, EGLint visual_id,
+                                  EGLConfig *configs, int count) {
+    int i;
+
+    for (i = 0; i < count; ++i) {
+        EGLint id;
+
+        if (!eglGetConfigAttrib(egl_display, configs[i], EGL_NATIVE_VISUAL_ID,
+                                &id))
+            continue;
+
+        if (id == visual_id) return i;
+    }
+
+    return -1;
+}
+
+bool BackendX11::egl_choose_config(const EGLint *attribs,
+                                   const EGLint *visual_id, const int n_ids,
+                                   EGLConfig *config_out) {
+    EGLint count = 0;
+    EGLint matched = 0;
+    EGLConfig *configs;
+    int i, config_index = -1;
+
+    if (!eglGetConfigs(egl_display_, NULL, 0, &count) || count < 1) {
+        error("No EGL configs to choose from.\n");
+        return false;
+    }
+
+    configs = new EGLConfig[count]();
+    if (!configs) return false;
+
+    if (!eglChooseConfig(egl_display_, attribs, configs, count, &matched) ||
+        !matched) {
+        error("No EGL configs with appropriate attributes.\n");
+        goto out;
+    }
+
+    if (!visual_id || n_ids == 0) config_index = 0;
+
+    for (i = 0; config_index == -1 && i < n_ids; i++)
+        config_index = match_config_to_visual(egl_display_, visual_id[i],
+                                              configs, matched);
+
+    if (config_index != -1) *config_out = configs[config_index];
+
+out:
+    delete[] configs;
+    if (config_index == -1) return false;
+
+    if (i > 1)
+        debug(
+            "Unable to use first choice EGL config with id"
+            " 0x%x, succeeded with alternate id 0x%x.\n",
+            visual_id[0], visual_id[i - 1]);
     return true;
 }
 
 }  // karuta
 
 extern "C" {
-void* karuta_create_backend() {
+void *karuta_create_backend() {
     return new karuta::BackendX11();
 }
 }

@@ -35,7 +35,7 @@ static int debug(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     printf("[Debug] ");
-    auto ret = vprintf(fmt, ap);
+    auto ret = vfprintf(stderr, fmt, ap);
     va_end(ap);
     return ret;
 }
@@ -45,7 +45,7 @@ static int error(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     printf("[Error] ");
-    auto ret = vprintf(fmt, ap);
+    auto ret = vfprintf(stderr, fmt, ap);
     va_end(ap);
     return ret;
 }
