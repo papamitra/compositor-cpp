@@ -45,10 +45,11 @@ Compositor::Compositor(wl::Display& display)
 
 void Compositor::init() {
     void* const module = dlopen("backend/x11/backend-x11.so", RTLD_NOW);
-    auto* const init = reinterpret_cast<create_backend_func_t>(dlsym(module, "karuta_create_backend"));
+    auto* const create_backend = reinterpret_cast<create_backend_func_t>(dlsym(module, "karuta_create_backend"));
+    assert(create_backend);
 
-    assert(init);
-    assert(!init());
+    Backend* backend = create_backend();
+    backend->init();
 }
 
 void Compositor::create_surface(Client& client, Resource& resource,

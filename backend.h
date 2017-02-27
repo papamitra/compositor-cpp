@@ -29,7 +29,7 @@ namespace karuta {
 
 class Backend {
 public:
-    virtual void init()=0;
+    virtual bool init()=0;
 };
 
 using create_backend_func_t = Backend*(*)();

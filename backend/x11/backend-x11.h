@@ -23,42 +23,20 @@
  * SOFTWARE.
  */
 
-#include "backend-x11.h"
+#pragma once
 
-#include "log.h"
+#include "../../backend.h"
+
+#include <xcb/xcb.h>
 
 namespace karuta {
 
-bool BackendX11::init() {
-    // FIXME: error handling.
-
-    conn_ = xcb_connect(NULL, NULL);
-    if (!conn_) {
-        error("xcb_connect() failed");
-        return false;
-    }
-
-    screen_ = xcb_setup_roots_iterator(xcb_get_setup(conn_)).data;
-
-    window_ = xcb_generate_id(conn_);
-
-    xcb_create_window(
-        conn_, XCB_COPY_FROM_PARENT, window_, screen_->root, 0, 0,  // x, y
-        1024, 768,  // width, height
-        10,         // border width
-        XCB_WINDOW_CLASS_INPUT_OUTPUT, screen_->root_visual, 0, NULL);
-
-    xcb_map_window(conn_, window_);
-
-    xcb_flush(conn_);
-
-    return true;
-}
+class BackendX11 : public Backend {
+    xcb_connection_t *conn_;
+    xcb_screen_t *screen_;
+    xcb_window_t window_;
+public:
+    bool init() override;
+};
 
 }  // karuta
-
-extern "C" {
-void* karuta_create_backend() {
-    return new karuta::BackendX11();
-}
-}

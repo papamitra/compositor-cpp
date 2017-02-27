@@ -10,21 +10,13 @@ add_executable(compositor ${SOURCE})
 add_dependencies(compositor server-protocol)
 
 find_package(PkgConfig)
-find_package(X11 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++14 -g -O0")
 
 pkg_check_modules(WAYLAND_SERVER REQUIRED wayland-server)
-pkg_check_modules(WAYLAND_CLIENT REQUIRED wayland-client)
-pkg_check_modules(WAYLAND_EGL REQUIRED wayland-egl)
-pkg_check_modules(EGL REQUIRED egl)
-pkg_check_modules(GLES2 REQUIRED glesv2)
 
 target_link_libraries(compositor
   ${WAYLAND_SERVER_LIBRARIES}
-  ${X11_LIBRARIES}
-  ${EGL_LIBRARIES}
-  ${GLES2_LIBRARIES}
   -ldl
   )
 
@@ -37,7 +29,7 @@ add_custom_command(
 )
 
 add_custom_target(server-protocol
-    DEPENDS ${CMAKE_SOURCE_DIR}/server-protocol.h ${CMAKE_SOURCE_DIR}/server-protocol.cpp
+    SOURCES ${CMAKE_SOURCE_DIR}/server-protocol.h ${CMAKE_SOURCE_DIR}/server-protocol.cpp
 )
 
 add_subdirectory(backend/x11)
