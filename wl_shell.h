@@ -25,27 +25,22 @@
 
 #pragma once
 
-#include <wayland-server.h>
-
-#include "impl_interface.h"
+#include "wayland_karuta_server.h"
+#include "global_instance.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-class Resource {
-    // DO NOT have other member than resource_.
-    struct wl_resource* resource_;
-
-    Resource(const Resource&) = delete;
-
+class WlShell : public WlShellInterface, public GlobalInstance<WlShell> {
+    WlDisplay& display_;
 public:
-    Resource(struct wl_resource* resource)
-        : resource_(resource) {}
+    WlShell(WlDisplay& display);
 
-    void set_implementation(ImplInterface& impl);
-
-    uint32_t get_version() const { return wl_resource_get_version(resource_); }
+    void get_shell_surface(WlClient& client, WlResource& resource,
+        uint32_t id,
+        class protocol::WlSurface* surface) {}
 };
 
-}  // wl
-}  // karuta::wl
+
+}  // protocol
+}  // karuta

@@ -25,13 +25,26 @@
 
 #pragma once
 
-namespace karuta {
+#include <wayland-server.h>
 
-class Backend {
+#include <memory>
+
+namespace karuta {
+namespace protocol {
+
+class WlResource;
+
+class WlClient {
+    // DO NOT have other member than client_.
+    wl_client* client_;
+
 public:
-    virtual bool init()=0;
+    WlClient(struct wl_client* client)
+        : client_(client) {}
+
+    std::unique_ptr<WlResource> resource_create(
+        const struct wl_interface* interface, uint32_t version, uint32_t id);
 };
 
-using create_backend_func_t = Backend*(*)(void*);
-
+}  // protocol
 }  // karuta

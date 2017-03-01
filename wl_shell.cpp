@@ -23,21 +23,14 @@
  * SOFTWARE.
  */
 
-#include "surface.h"
-#include "log.h"
-
-#include <cstdio>
+#include "wl_shell.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-Surface::Surface(wl::Client& client, uint32_t version, uint32_t id)
-    : Instance(client, version, id) {
+WlShell::WlShell(WlDisplay& display)
+    : GlobalInstance(display), display_(display) {
 }
 
-void Surface::frame(Client& client, Resource& resource, uint32_t callback) {
-    debug(__func__);
-}
-
-}  // wl
+}  // protocol
 }  // karuta

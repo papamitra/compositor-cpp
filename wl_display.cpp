@@ -23,21 +23,25 @@
  * SOFTWARE.
  */
 
-#include "resource.h"
-#include "impl_interface.h"
+#include "wl_display.h"
+#include "wl_client.h"
+#include "log.h"
+
+#include <functional>
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-static void destroy_resource(struct wl_resource* resource) {
-    ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
-    impl->destroy();
+void WlDisplay::run() {
+    const char* socket_name = wl_display_add_socket_auto(display_);
+    if (!socket_name) {
+        error("listen failed\n");
+        exit(1);
+    }
+
+    setenv("WAYLAND_DISPLAY", socket_name, 1);
+
+    wl_display_run(display_);
 }
-
-void Resource::set_implementation(ImplInterface& impl) {
-    wl_resource_set_implementation(resource_, impl.get_interface(),
-                                   &impl, destroy_resource);
-}
-
-}  // wl
+}  // protocol
 }  // karuta::wl

@@ -23,15 +23,12 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "sever-protocol.h"
 
 namespace karuta {
+namespace Namespace {
 
-class Backend {
-public:
-    virtual bool init()=0;
-};
 
-using create_backend_func_t = Backend*(*)(void*);
 
+}  // Namespace
 }  // karuta

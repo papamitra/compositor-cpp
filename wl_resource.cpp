@@ -23,43 +23,21 @@
  * SOFTWARE.
  */
 
-#include "compositor.h"
-
-#include "display.h"
-#include "resource.h"
-#include "client.h"
-#include "surface.h"
-#include "backend.h"
-
-#include <functional>
-#include <memory>
-#include <cassert>
-#include <dlfcn.h>
+#include "wl_resource.h"
+#include "impl_interface.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-Compositor::Compositor(wl::Display& display)
-    : GlobalInstance(display), display_(display) {
+static void destroy_resource(struct wl_resource* resource) {
+    ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
+    impl->destroy();
 }
 
-void Compositor::init() {
-    void* const module = dlopen("backend/x11/backend-x11.so", RTLD_NOW);
-    auto* const create_backend = reinterpret_cast<create_backend_func_t>(dlsym(module, "karuta_create_backend"));
-    assert(create_backend);
-
-    Backend* backend = create_backend();
-    backend->init();
+void WlResource::set_implementation(ImplInterface& impl) {
+    wl_resource_set_implementation(resource_, impl.get_interface(),
+                                   &impl, destroy_resource);
 }
 
-void Compositor::create_surface(Client& client, Resource& resource,
-                                uint32_t id) {
-    Surface::create(client, resource.get_version(), id);
-}
-
-void Compositor::create_region(Client& client, Resource& resource,
-                               uint32_t id) {
-}
-
-}  // wl
-}  // karuta
+}  // protocol
+}  // karuta::wl

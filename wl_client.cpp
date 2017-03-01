@@ -23,15 +23,22 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "wl_client.h"
+#include "wl_resource.h"
 
 namespace karuta {
+namespace protocol {
 
-class Backend {
-public:
-    virtual bool init()=0;
-};
+std::unique_ptr<WlResource> WlClient::resource_create(const struct wl_interface* interface,
+                                                      uint32_t version, uint32_t id) {
+    struct wl_resource* resource = wl_resource_create(client_, interface, version, id);
+    if (!resource) {
+        wl_client_post_no_memory(client_);
+        return std::unique_ptr<WlResource>();
+    }
 
-using create_backend_func_t = Backend*(*)(void*);
+    return std::make_unique<WlResource>(resource);
+}
 
+}  // protocol
 }  // karuta

@@ -25,47 +25,47 @@
 
 #pragma once
 
-#include "server-protocol.h"
+#include "wayland_karuta_server.h"
 
 #include "instance.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-class Surface : public SurfaceInterface, public Instance<Surface> {
-    friend class Instance<Surface>;
-
-private:
-    Surface(Client& client, uint32_t version, uint32_t id);
+class WlSurface : public WlSurfaceInterface, public Instance<WlSurface> {
+    friend class Instance<WlSurface>;
 
 private:
-    void destroy(Client& client, Resource& resource) override {}
+    WlSurface(WlClient& client, uint32_t version, uint32_t id);
 
-    void attach(Client& client, Resource& resource, class wl::Buffer* buffer,
+private:
+    void destroy(WlClient& client, WlResource& resource) override {}
+
+    void attach(WlClient& client, WlResource& resource, class protocol::WlBuffer* buffer,
                 int32_t x, int32_t y) override {}
 
-    void damage(Client& client, Resource& resource, int32_t x, int32_t y,
+    void damage(WlClient& client, WlResource& resource, int32_t x, int32_t y,
                 int32_t width, int32_t height) override {}
 
-    void frame(Client& client, Resource& resource, uint32_t callback) override;
+    void frame(WlClient& client, WlResource& resource, uint32_t callback) override;
 
-    void set_opaque_region(Client& client, Resource& resource,
-                           class wl::Region* region) override {}
+    void set_opaque_region(WlClient& client, WlResource& resource,
+                           class protocol::WlRegion* region) override {}
 
-    void set_input_region(Client& client, Resource& resource,
-                          class wl::Region* region) override {}
+    void set_input_region(WlClient& client, WlResource& resource,
+                          class protocol::WlRegion* region) override {}
 
-    void commit(Client& client, Resource& resource) override {}
+    void commit(WlClient& client, WlResource& resource) override {}
 
-    void set_buffer_transform(Client& client, Resource& resource,
+    void set_buffer_transform(WlClient& client, WlResource& resource,
                               int32_t transform) override {}
 
-    void set_buffer_scale(Client& client, Resource& resource,
+    void set_buffer_scale(WlClient& client, WlResource& resource,
                           int32_t scale) override {}
 
-    void damage_buffer(Client& client, Resource& resource, int32_t x, int32_t y,
+    void damage_buffer(WlClient& client, WlResource& resource, int32_t x, int32_t y,
                        int32_t width, int32_t height) override {}
 };
 
-}  // wl
+}  // protocol
 }  // karuta

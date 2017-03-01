@@ -25,8 +25,8 @@
 
 #pragma once
 
-#include "client.h"
-#include "resource.h"
+#include "wl_client.h"
+#include "wl_resource.h"
 
 #include <functional>
 
@@ -34,10 +34,10 @@ namespace karuta {
 
 template <typename T>
 class Instance {
-    wl::Resource* res_;
+    protocol::WlResource* res_;
 
 protected:
-    Instance(wl::Client& client, uint32_t version, uint32_t id) {
+    Instance(protocol::WlClient& client, uint32_t version, uint32_t id) {
         auto resource =
             client.resource_create(T::get_wl_interface(), version, id);
         resource->set_implementation(*static_cast<T*>(this));

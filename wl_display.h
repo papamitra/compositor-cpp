@@ -25,13 +25,25 @@
 
 #pragma once
 
-namespace karuta {
+#include <wayland-server.h>
 
-class Backend {
+#include <functional>
+
+namespace karuta {
+namespace protocol {
+
+class WlDisplay {
+    wl_display* const display_;
+
 public:
-    virtual bool init()=0;
+    WlDisplay()
+        : display_(wl_display_create()) {}
+
+    void run();
+
+    wl_display* get_wl_display() { return display_; }
+
 };
 
-using create_backend_func_t = Backend*(*)(void*);
-
-}  // karuta
+}  // protocol
+}  // karuta::wl

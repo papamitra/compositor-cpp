@@ -23,23 +23,32 @@
  * SOFTWARE.
  */
 
-#include "client.h"
+#pragma once
 
-#include "resource.h"
+#include "xdg-shell-unstable-v6_karuta_server.h"
+
+#include "global_instance.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-std::unique_ptr<Resource> Client::resource_create(const struct wl_interface* interface,
-                                 uint32_t version, uint32_t id) {
-    struct wl_resource* resource = wl_resource_create(client_, interface, version, id);
-    if (!resource) {
-        wl_client_post_no_memory(client_);
-        return std::unique_ptr<Resource>();
-    }
+class XdgShell : public ZxdgShellV6Interface, public GlobalInstance<XdgShell> {
+public:
+    XdgShell(WlDisplay& dislplay);
 
-    return std::make_unique<Resource>(resource);
-}
+private:
+    void destroy(WlClient& client, WlResource& resource) override {}
 
-}  // wl
+    void create_positioner(WlClient& client, WlResource& resource,
+        uint32_t id) override {}
+
+    void get_xdg_surface(WlClient& client, WlResource& resource,
+        uint32_t id,
+        class WlSurface* surface) override {}
+
+    void pong(WlClient& client, WlResource& resource,
+        uint32_t serial) override {}
+};
+
+}  // protocol
 }  // karuta

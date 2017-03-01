@@ -23,27 +23,14 @@
  * SOFTWARE.
  */
 
-#pragma once
-
-#include <wayland-server.h>
-
-#include <functional>
+#include "xdg_shell.h"
+#include "xdg-shell-unstable-v6-server-protocol.h"
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-class Display {
-    wl_display* const display_;
+XdgShell::XdgShell(WlDisplay& display) : GlobalInstance<XdgShell>(display) {
+}
 
-public:
-    Display()
-        : display_(wl_display_create()) {}
-
-    void run();
-
-    wl_display* get_wl_display() { return display_; }
-
-};
-
-}  // wl
-}  // karuta::wl
+}  // protocol
+}  // karuta

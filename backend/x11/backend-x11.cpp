@@ -24,16 +24,20 @@
  */
 
 #include "backend-x11.h"
+#include "wl_compositor.h"
+#include "wl_display.h"
 #include "log.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <cstdlib>
+#include <cassert>
 
 namespace karuta {
 
-BackendX11::BackendX11()
-    : egl_display_(EGL_NO_DISPLAY) {
+BackendX11::BackendX11(protocol::WlCompositor *compositor)
+    : egl_display_(EGL_NO_DISPLAY)
+    , compositor_(compositor) {
 }
 
 bool BackendX11::init() {
@@ -102,6 +106,13 @@ bool BackendX11::egl_init() {
         return false;
     }
 
+    auto bind_display = reinterpret_cast<PFNEGLBINDWAYLANDDISPLAYWL>(
+        eglGetProcAddress("eglBindWaylandDisplayWL"));
+    assert(bind_display);
+
+    auto wl_disp = compositor_->display().get_wl_display();
+    bind_display(egl_display_, wl_disp);
+
     return true;
 }
 
@@ -167,7 +178,8 @@ out:
 }  // karuta
 
 extern "C" {
-void *karuta_create_backend() {
-    return new karuta::BackendX11();
+void *karuta_create_backend(void *compositor) {
+    return new karuta::BackendX11(
+        static_cast<karuta::protocol::WlCompositor *>(compositor));
 }
 }

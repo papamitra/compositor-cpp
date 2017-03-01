@@ -23,28 +23,21 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "wl_surface.h"
+#include "log.h"
 
-#include <wayland-server.h>
-
-#include <memory>
+#include <cstdio>
 
 namespace karuta {
-namespace wl {
+namespace protocol {
 
-class Resource;
+WlSurface::WlSurface(protocol::WlClient& client, uint32_t version, uint32_t id)
+    : Instance(client, version, id) {
+}
 
-class Client {
-    // DO NOT have other member than client_.
-    wl_client* client_;
+void WlSurface::frame(WlClient& client, WlResource& resource, uint32_t callback) {
+    debug(__func__);
+}
 
-public:
-    Client(struct wl_client* client)
-        : client_(client) {}
-
-    std::unique_ptr<Resource> resource_create(
-        const struct wl_interface* interface, uint32_t version, uint32_t id);
-};
-
-}  // wl
+}  // protocol
 }  // karuta

@@ -23,25 +23,39 @@
  * SOFTWARE.
  */
 
-#include "display.h"
-#include "client.h"
-#include "log.h"
+#pragma once
 
-#include <functional>
+#include "wayland_karuta_server.h"
+
+#include "global_instance.h"
 
 namespace karuta {
-namespace wl {
-
-void Display::run() {
-    const char* socket_name = wl_display_add_socket_auto(display_);
-    if (!socket_name) {
-        error("listen failed\n");
-        exit(1);
-    }
-
-    setenv("WAYLAND_DISPLAY", socket_name, 1);
-
-    wl_display_run(display_);
+namespace protocol {
+class WlDisplay;
+class WlClient;
 }
-}  // wl
-}  // karuta::wl
+}
+
+namespace karuta {
+namespace protocol {
+
+class WlCompositor : public WlCompositorInterface,
+                     public GlobalInstance<WlCompositor> {
+    WlDisplay& display_;
+
+public:
+    WlCompositor(WlDisplay& display);
+
+    void init();
+
+    void create_surface(WlClient& client, WlResource& resource,
+                        uint32_t id) override;
+
+    void create_region(WlClient& client, WlResource& resource,
+                       uint32_t id) override;
+
+    WlDisplay& display() { return display_; }
+};
+
+}  // protocol
+}  // karuta

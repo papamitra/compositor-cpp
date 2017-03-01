@@ -23,35 +23,44 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "wl_compositor.h"
 
-#include "server-protocol.h"
+#include "wl_display.h"
+#include "wl_resource.h"
+#include "wl_client.h"
+#include "wl_surface.h"
+#include "backend.h"
 
-#include "global_instance.h"
+#include <functional>
+#include <memory>
+#include <cassert>
+#include <dlfcn.h>
 
 namespace karuta {
-namespace wl {
-    class Display;
-    class Client;
+namespace protocol {
+
+WlCompositor::WlCompositor(protocol::WlDisplay& display)
+    : GlobalInstance(display), display_(display) {
 }
+
+void WlCompositor::init() {
+    void* const module = dlopen("backend/x11/backend-x11.so", RTLD_NOW);
+    auto* const create_backend = reinterpret_cast<create_backend_func_t>(
+        dlsym(module, "karuta_create_backend"));
+    assert(create_backend);
+
+    Backend* backend = create_backend(this);
+    backend->init();
 }
 
-namespace karuta {
-namespace wl {
+void WlCompositor::create_surface(WlClient& client, WlResource& resource,
+                                  uint32_t id) {
+    WlSurface::create(client, resource.get_version(), id);
+}
 
-class Compositor : public CompositorInterface,
-                   public GlobalInstance<Compositor> {
-    wl::Display& display_;
+void WlCompositor::create_region(WlClient& client, WlResource& resource,
+                                 uint32_t id) {
+}
 
-public:
-    Compositor(wl::Display& display);
-
-    void init();
-
-    void create_surface(Client& client, Resource& resource, uint32_t id) override;
-
-    void create_region(Client& client, Resource& resource, uint32_t id) override;
-};
-
-}  // wl
+}  // protocol
 }  // karuta

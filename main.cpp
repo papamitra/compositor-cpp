@@ -23,19 +23,23 @@
  * SOFTWARE.
  */
 
-#include "display.h"
-#include "compositor.h"
+#include "wl_display.h"
+#include "wl_compositor.h"
+#include "xdg_shell.h"
+
 #include "log.h"
 
 #include <new>
 
 int main(int argc, char *argv[])
 {
-    using namespace karuta::wl;
+    using namespace karuta::protocol;
 
     try {
-        Display display;
-        Compositor compositor(display);
+        WlDisplay display;
+        WlCompositor compositor(display);
+
+        XdgShell xdg_shell(display);
 
         compositor.init();
 
