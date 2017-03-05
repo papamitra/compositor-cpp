@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 2.8.9)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(DISABLE_CXX_WARNINGS   "-Wno-unused-parameter -Wno-unused-function -Wno-missing-field-initializers")
+set(CMAKE_C_FLAGS          "-g -O0 -fprofile-arcs -ftest-coverage -Wall -W")
+set(CMAKE_CXX_FLAGS        "-g -O0 -fprofile-arcs -ftest-coverage -Wall ${DISABLE_CXX_WARNINGS} -std=c++11")
+set(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+
+include_directories(
+  ../
+  )
+
+file(GLOB SOURCE
+  src/*.cpp
+  )
+
+add_executable(unit_test ${SOURCE})
+target_link_libraries(unit_test
+  -lgtest
+  -lgtest_main
+  -lpthread
+  )
