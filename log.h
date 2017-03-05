@@ -34,7 +34,7 @@ __attribute__ ((format(printf, 1, 2)))
 static int debug(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    printf("[Debug] ");
+    printf("[Debug  ] ");
     auto ret = vfprintf(stderr, fmt, ap);
     va_end(ap);
     return ret;
@@ -44,7 +44,17 @@ __attribute__ ((format(printf, 1, 2)))
 static int error(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    printf("[Error] ");
+    printf("[Error  ] ");
+    auto ret = vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    return ret;
+}
+
+__attribute__ ((format(printf, 1, 2)))
+static int warn(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    printf("[Warning] ");
     auto ret = vfprintf(stderr, fmt, ap);
     va_end(ap);
     return ret;
