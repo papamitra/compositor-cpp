@@ -29,6 +29,8 @@
 
 #include "instance.h"
 
+#include "log.h"
+
 namespace karuta {
 namespace protocol {
 
@@ -41,30 +43,48 @@ private:
 private:
     void destroy(WlClient& client, WlResource& resource) override {}
 
-    void attach(WlClient& client, WlResource& resource, class protocol::WlBuffer* buffer,
-                int32_t x, int32_t y) override {}
+    void attach(WlClient& client, WlResource& resource,
+                class protocol::WlBuffer* buffer, int32_t x,
+                int32_t y) override {
+        debug("%s", __func__);
+    }
 
     void damage(WlClient& client, WlResource& resource, int32_t x, int32_t y,
-                int32_t width, int32_t height) override {}
+                int32_t width, int32_t height) override {
+        debug("%s", __func__);
+    }
 
-    void frame(WlClient& client, WlResource& resource, uint32_t callback) override;
+    void frame(WlClient& client, WlResource& resource,
+               uint32_t callback) override;
 
     void set_opaque_region(WlClient& client, WlResource& resource,
-                           class protocol::WlRegion* region) override {}
+                           class protocol::WlRegion* region) override {
+        debug("%s", __func__);
+    }
 
     void set_input_region(WlClient& client, WlResource& resource,
-                          class protocol::WlRegion* region) override {}
+                          class protocol::WlRegion* region) override {
+        debug("%s", __func__);
+    }
 
-    void commit(WlClient& client, WlResource& resource) override {}
+    void commit(WlClient& client, WlResource& resource) override {
+        debug("%s", __func__);
+    }
 
     void set_buffer_transform(WlClient& client, WlResource& resource,
-                              int32_t transform) override {}
+                              int32_t transform) override {
+        debug("%s", __func__);
+    }
 
     void set_buffer_scale(WlClient& client, WlResource& resource,
-                          int32_t scale) override {}
+                          int32_t scale) override {
+        debug("%s", __func__);
+    }
 
-    void damage_buffer(WlClient& client, WlResource& resource, int32_t x, int32_t y,
-                       int32_t width, int32_t height) override {}
+    void damage_buffer(WlClient& client, WlResource& resource, int32_t x,
+                       int32_t y, int32_t width, int32_t height) override {
+        debug("%s", __func__);
+    }
 };
 
 }  // protocol

@@ -36,7 +36,7 @@ WlSurface::WlSurface(protocol::WlClient& client, uint32_t version, uint32_t id)
 }
 
 void WlSurface::frame(WlClient& client, WlResource& resource, uint32_t callback) {
-    debug(__func__);
+    debug("%s\n", __func__);
 }
 
 }  // protocol

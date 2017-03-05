@@ -56,10 +56,12 @@ void WlCompositor::init() {
 void WlCompositor::create_surface(WlClient& client, WlResource& resource,
                                   uint32_t id) {
     WlSurface::create(client, resource.get_version(), id);
+    debug("%s\n", __func__);
 }
 
 void WlCompositor::create_region(WlClient& client, WlResource& resource,
                                  uint32_t id) {
+    debug("%s\n", __func__);
 }
 
 }  // protocol

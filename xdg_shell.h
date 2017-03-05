@@ -28,6 +28,7 @@
 #include "xdg-shell-unstable-v6_karuta_server.h"
 
 #include "global_instance.h"
+#include "log.h"
 
 namespace karuta {
 namespace protocol {
@@ -40,14 +41,19 @@ private:
     void destroy(WlClient& client, WlResource& resource) override {}
 
     void create_positioner(WlClient& client, WlResource& resource,
-        uint32_t id) override {}
+                           uint32_t id) override {
+        debug("%s\n", __func__);
+    }
 
-    void get_xdg_surface(WlClient& client, WlResource& resource,
-        uint32_t id,
-        class WlSurface* surface) override {}
+    void get_xdg_surface(WlClient& client, WlResource& resource, uint32_t id,
+                         class WlSurface* surface) override {
+        debug("%s", __func__);
+    }
 
     void pong(WlClient& client, WlResource& resource,
-        uint32_t serial) override {}
+              uint32_t serial) override {
+        debug("%s", __func__);
+    }
 };
 
 }  // protocol

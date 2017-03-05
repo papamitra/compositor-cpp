@@ -28,19 +28,22 @@
 #include "wayland_karuta_server.h"
 #include "global_instance.h"
 
+#include "log.h"
+
 namespace karuta {
 namespace protocol {
 
 class WlShell : public WlShellInterface, public GlobalInstance<WlShell> {
     WlDisplay& display_;
+
 public:
     WlShell(WlDisplay& display);
 
-    void get_shell_surface(WlClient& client, WlResource& resource,
-        uint32_t id,
-        class protocol::WlSurface* surface) {}
+    void get_shell_surface(WlClient& client, WlResource& resource, uint32_t id,
+                           class protocol::WlSurface* surface) {
+        debug("%s", __func__);
+    }
 };
-
 
 }  // protocol
 }  // karuta
