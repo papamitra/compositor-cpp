@@ -42,6 +42,8 @@ class ArrayRef {
 public:
     ArrayRef(wl_array* array) : array_(array) {}
 
+    wl_array* get_wl_array() { return array_; }
+
     template <typename T>
     bool add(const T& val) {
         assert(array_);
