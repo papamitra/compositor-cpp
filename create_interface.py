@@ -128,16 +128,11 @@ def to_class_name(name):
     return ''.join(map(lambda s: s.title(), name.split('_')))
 
 def to_member_funcs(reqs):
-    s = ""
-    for (name, args) in reqs:
-        s += '\n'
-        s += to_member_func(name, args)
-    return s
+    return ''.join(['\n' + to_member_func(*req) for req in reqs])
 
 def to_member_func(name, args):
     s = '    virtual void ' + name + '(WlClient& client, WlResource& resource'
-    args_str = ',\n'.join(map(lambda arg: '        ' + to_cpp_type(arg) + ' ' + arg.attrib['name'], args))
-    s += '' if args_str == '' else ',\n' + args_str
+    s += ''.join([',\n        ' + to_cpp_type(arg) + ' ' + arg.attrib['name'] for arg in args])
     s += ') = 0;\n'
     return s
 
@@ -156,11 +151,7 @@ def to_member_event_func(ifname, name, args):
     return s
 
 def to_static_funcs(ifname, reqs):
-    s = ""
-    for (name, args) in reqs:
-        s += '\n'
-        s += to_static_func(ifname, name, args)
-    return s
+    return ''.join(['\n' + to_static_func(ifname, *req) for req in reqs])
 
 def to_static_func(ifname, name, args):
     classname = to_class_name(ifname) + 'Interface'
@@ -253,8 +244,7 @@ def create_pre_define(tree):
     s = ""
     s += '\nnamespace karuta {'
     s += '\nnamespace protocol {'
-    for c in predefs:
-        s += '\n    class ' + c + ';'
+    s += ''.join(['\n    class ' + c + ';' for c in predefs])
     s += '\n}'
     s += '\n}\n'
     return s
