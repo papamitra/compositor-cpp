@@ -25,30 +25,27 @@
 
 #pragma once
 
-#include "client.h"
-#include "resource.h"
+#include <wayland-server.h>
 
-#include <functional>
+#include "impl_interface.h"
 
 namespace karuta {
 
-template <typename T>
-class Instance {
-    Resource* res_;
+class Resource {
+    // DO NOT have other member than resource_.
+    struct wl_resource* resource_;
 
-protected:
-    Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
-    }
+    Resource(const Resource&) = delete;
 
 public:
-    template<typename... Args>
-    static void create(Args&&... args) {
-        auto p = new T(std::forward<Args>(args)...);
-    }
+    Resource(struct wl_resource* resource)
+        : resource_(resource) {}
+
+    void set_implementation(ImplInterface& impl);
+
+    uint32_t get_version() const { return wl_resource_get_version(resource_); }
+
+    struct wl_resource* get_wl_resource() { return resource_; }
 };
 
 }  // karuta

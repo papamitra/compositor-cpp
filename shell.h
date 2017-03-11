@@ -25,25 +25,23 @@
 
 #pragma once
 
-#include <wayland-server.h>
+#include "wayland_karuta_server.h"
+#include "global_instance.h"
 
-#include <functional>
+#include "log.h"
 
 namespace karuta {
-namespace protocol {
 
-class WlDisplay {
-    wl_display* const display_;
+class Shell : public protocol::WlShell, public GlobalInstance<Shell> {
+    Display& display_;
 
 public:
-    WlDisplay()
-        : display_(wl_display_create()) {}
+    Shell(Display& display);
 
-    void run();
-
-    wl_display* get_wl_display() { return display_; }
-
+    void get_shell_surface(Client& client, Resource& resource, uint32_t id,
+                           Resource& surface) {
+        debug("%s", __func__);
+    }
 };
 
-}  // protocol
-}  // karuta::wl
+}  // karuta

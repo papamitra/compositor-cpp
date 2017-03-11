@@ -23,22 +23,12 @@
  * SOFTWARE.
  */
 
-#include "wl_client.h"
-#include "wl_resource.h"
+#include "buffer.h"
 
 namespace karuta {
-namespace protocol {
 
-std::unique_ptr<WlResource> WlClient::resource_create(const struct wl_interface* interface,
-                                                      uint32_t version, uint32_t id) {
-    struct wl_resource* resource = wl_resource_create(client_, interface, version, id);
-    if (!resource) {
-        wl_client_post_no_memory(client_);
-        return std::unique_ptr<WlResource>();
-    }
-
-    return std::make_unique<WlResource>(resource);
+Buffer::Buffer(Client& client, uint32_t version, uint32_t id)
+    : Instance(client, version, id) {
 }
 
-}  // protocol
 }  // karuta

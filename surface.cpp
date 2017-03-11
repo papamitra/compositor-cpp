@@ -23,21 +23,19 @@
  * SOFTWARE.
  */
 
-#include "wl_resource.h"
-#include "impl_interface.h"
+#include "surface.h"
+#include "log.h"
+
+#include <cstdio>
 
 namespace karuta {
-namespace protocol {
 
-static void destroy_resource(struct wl_resource* resource) {
-    ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
-    impl->destroy();
+Surface::Surface(Client& client, uint32_t version, uint32_t id)
+    : Instance(client, version, id) {
 }
 
-void WlResource::set_implementation(ImplInterface& impl) {
-    wl_resource_set_implementation(resource_, impl.get_interface(),
-                                   &impl, destroy_resource);
+void Surface::frame(Client& client, Resource& resource, uint32_t callback) {
+    debug("%s\n", __func__);
 }
 
-}  // protocol
-}  // karuta::wl
+}  // karuta

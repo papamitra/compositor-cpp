@@ -24,8 +24,8 @@
  */
 
 #include "backend-x11.h"
-#include "wl_compositor.h"
-#include "wl_display.h"
+#include "compositor.h"
+#include "display.h"
 #include "log.h"
 
 #include <EGL/egl.h>
@@ -35,7 +35,7 @@
 
 namespace karuta {
 
-BackendX11::BackendX11(protocol::WlCompositor *compositor)
+BackendX11::BackendX11(Compositor *compositor)
     : egl_display_(EGL_NO_DISPLAY)
     , compositor_(compositor) {
 }
@@ -180,6 +180,6 @@ out:
 extern "C" {
 void *karuta_create_backend(void *compositor) {
     return new karuta::BackendX11(
-        static_cast<karuta::protocol::WlCompositor *>(compositor));
+        static_cast<karuta::Compositor *>(compositor));
 }
 }

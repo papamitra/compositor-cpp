@@ -23,12 +23,12 @@
  * SOFTWARE.
  */
 
-#include "sever-protocol.h"
+#include "shell.h"
 
 namespace karuta {
-namespace Namespace {
 
+Shell::Shell(Display& display)
+    : GlobalInstance(display), display_(display) {
+}
 
-
-}  // Namespace
 }  // karuta

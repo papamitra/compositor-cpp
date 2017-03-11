@@ -8,12 +8,12 @@ include(cmake/UseWaylandScanner.cmake)
 
 set( SOURCE
   ${CMAKE_SOURCE_DIR}/main.cpp
-  ${CMAKE_SOURCE_DIR}/wl_client.cpp
-  ${CMAKE_SOURCE_DIR}/wl_compositor.cpp
-  ${CMAKE_SOURCE_DIR}/wl_display.cpp
-  ${CMAKE_SOURCE_DIR}/wl_resource.cpp
-  ${CMAKE_SOURCE_DIR}/wl_shell.cpp
-  ${CMAKE_SOURCE_DIR}/wl_surface.cpp
+  ${CMAKE_SOURCE_DIR}/client.cpp
+  ${CMAKE_SOURCE_DIR}/compositor.cpp
+  ${CMAKE_SOURCE_DIR}/display.cpp
+  ${CMAKE_SOURCE_DIR}/resource.cpp
+  ${CMAKE_SOURCE_DIR}/shell.cpp
+  ${CMAKE_SOURCE_DIR}/surface.cpp
   ${CMAKE_SOURCE_DIR}/xdg_shell.cpp
 )
 

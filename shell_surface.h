@@ -23,31 +23,8 @@
  * SOFTWARE.
  */
 
-#pragma once
-
-#include <wayland-server.h>
-
-#include "impl_interface.h"
+#include "sever-protocol.h"
 
 namespace karuta {
-namespace protocol {
 
-class WlResource {
-    // DO NOT have other member than resource_.
-    struct wl_resource* resource_;
-
-    WlResource(const WlResource&) = delete;
-
-public:
-    WlResource(struct wl_resource* resource)
-        : resource_(resource) {}
-
-    void set_implementation(ImplInterface& impl);
-
-    uint32_t get_version() const { return wl_resource_get_version(resource_); }
-
-    struct wl_resource* get_wl_resource() { return resource_; }
-};
-
-}  // protocol
-}  // karuta::wl
+}  // karuta

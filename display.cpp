@@ -23,32 +23,24 @@
  * SOFTWARE.
  */
 
-#pragma once
-
+#include "display.h"
 #include "client.h"
-#include "resource.h"
+#include "log.h"
 
 #include <functional>
 
 namespace karuta {
 
-template <typename T>
-class Instance {
-    Resource* res_;
-
-protected:
-    Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
+void Display::run() {
+    const char* socket_name = wl_display_add_socket_auto(display_);
+    if (!socket_name) {
+        error("listen failed\n");
+        exit(1);
     }
 
-public:
-    template<typename... Args>
-    static void create(Args&&... args) {
-        auto p = new T(std::forward<Args>(args)...);
-    }
-};
+    setenv("WAYLAND_DISPLAY", socket_name, 1);
+
+    wl_display_run(display_);
+}
 
 }  // karuta

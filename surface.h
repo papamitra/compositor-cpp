@@ -26,24 +26,54 @@
 #pragma once
 
 #include "wayland_karuta_server.h"
-#include "global_instance.h"
+
+#include "instance.h"
 
 #include "log.h"
 
 namespace karuta {
-namespace protocol {
 
-class WlShell : public WlShellInterface, public GlobalInstance<WlShell> {
-    WlDisplay& display_;
+class Surface : public protocol::WlSurface, public Instance<Surface> {
+    friend class Instance<Surface>;
 
-public:
-    WlShell(WlDisplay& display);
+private:
+    Surface(Client& client, uint32_t version, uint32_t id);
 
-    void get_shell_surface(WlClient& client, WlResource& resource, uint32_t id,
-                           class protocol::WlSurface* surface) {
+private:
+    void destroy(Client& client, Resource& resource) override {}
+
+    void attach(Client& client, Resource& resource, Resource& buffer, int32_t x,
+                int32_t y) override {
         debug("%s", __func__);
     }
+
+    void damage(Client& client, Resource& resource, int32_t x, int32_t y,
+                int32_t width, int32_t height) override {
+        debug("%s", __func__);
+    }
+
+    void frame(Client& client, Resource& resource, uint32_t callback) override;
+
+    void set_opaque_region(Client& client, Resource& resource,
+        Resource& region) override {}
+
+    void set_input_region(Client& client, Resource& resource,
+        Resource& region) override {}
+
+    void commit(Client& client, Resource& resource) override {}
+
+    void set_buffer_transform(Client& client, Resource& resource,
+        int32_t transform) override {}
+
+    void set_buffer_scale(Client& client, Resource& resource,
+        int32_t scale) override {}
+
+    void damage_buffer(Client& client, Resource& resource,
+        int32_t x,
+        int32_t y,
+        int32_t width,
+        int32_t height) override {}
+
 };
 
-}  // protocol
 }  // karuta

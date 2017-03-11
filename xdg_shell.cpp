@@ -27,10 +27,8 @@
 #include "xdg-shell-unstable-v6-server-protocol.h"
 
 namespace karuta {
-namespace protocol {
 
-XdgShell::XdgShell(WlDisplay& display) : GlobalInstance<XdgShell>(display) {
+XdgShell::XdgShell(Display& display) : GlobalInstance<XdgShell>(display) {
 }
 
-}  // protocol
 }  // karuta

@@ -23,14 +23,34 @@
  * SOFTWARE.
  */
 
-#include "wl_shell.h"
+#pragma once
+
+#include "wayland_karuta_server.h"
+
+#include "global_instance.h"
 
 namespace karuta {
-namespace protocol {
-
-WlShell::WlShell(WlDisplay& display)
-    : GlobalInstance(display), display_(display) {
+class Display;
+class Client;
 }
 
-}  // protocol
+namespace karuta {
+
+class Compositor : public protocol::WlCompositor, public GlobalInstance<Compositor> {
+    Display& display_;
+
+public:
+    Compositor(Display& display);
+
+    void init();
+
+    void create_surface(Client& client, Resource& resource,
+                        uint32_t id) override;
+
+    void create_region(Client& client, Resource& resource,
+                       uint32_t id) override;
+
+    Display& display() { return display_; }
+};
+
 }  // karuta

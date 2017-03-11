@@ -23,28 +23,19 @@
  * SOFTWARE.
  */
 
-#pragma once
-
-#include <wayland-server.h>
-
-#include <memory>
+#include "resource.h"
+#include "impl_interface.h"
 
 namespace karuta {
-namespace protocol {
 
-class WlResource;
+static void destroy_resource(struct wl_resource* resource) {
+    ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
+    impl->destroy();
+}
 
-class WlClient {
-    // DO NOT have other member than client_.
-    wl_client* client_;
+void Resource::set_implementation(ImplInterface& impl) {
+    wl_resource_set_implementation(resource_, impl.get_interface(),
+                                   &impl, destroy_resource);
+}
 
-public:
-    WlClient(struct wl_client* client)
-        : client_(client) {}
-
-    std::unique_ptr<WlResource> resource_create(
-        const struct wl_interface* interface, uint32_t version, uint32_t id);
-};
-
-}  // protocol
 }  // karuta

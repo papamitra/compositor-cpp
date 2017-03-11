@@ -23,32 +23,21 @@
  * SOFTWARE.
  */
 
-#pragma once
-
 #include "client.h"
 #include "resource.h"
 
-#include <functional>
-
 namespace karuta {
 
-template <typename T>
-class Instance {
-    Resource* res_;
-
-protected:
-    Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
+std::unique_ptr<Resource> Client::resource_create(
+    const struct wl_interface* interface, uint32_t version, uint32_t id) {
+    struct wl_resource* resource =
+        wl_resource_create(client_, interface, version, id);
+    if (!resource) {
+        wl_client_post_no_memory(client_);
+        return std::unique_ptr<Resource>();
     }
 
-public:
-    template<typename... Args>
-    static void create(Args&&... args) {
-        auto p = new T(std::forward<Args>(args)...);
-    }
-};
+    return std::make_unique<Resource>(resource);
+}
 
 }  // karuta

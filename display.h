@@ -23,25 +23,25 @@
  * SOFTWARE.
  */
 
-#include "wl_display.h"
-#include "wl_client.h"
-#include "log.h"
+#pragma once
+
+#include <wayland-server.h>
 
 #include <functional>
 
 namespace karuta {
-namespace protocol {
 
-void WlDisplay::run() {
-    const char* socket_name = wl_display_add_socket_auto(display_);
-    if (!socket_name) {
-        error("listen failed\n");
-        exit(1);
-    }
+class Display {
+    wl_display* const display_;
 
-    setenv("WAYLAND_DISPLAY", socket_name, 1);
+public:
+    Display()
+        : display_(wl_display_create()) {}
 
-    wl_display_run(display_);
-}
-}  // protocol
-}  // karuta::wl
+    void run();
+
+    wl_display* get_wl_display() { return display_; }
+
+};
+
+}  // karuta

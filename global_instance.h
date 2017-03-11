@@ -27,9 +27,9 @@
 
 #include <wayland-server.h>
 
-#include "wl_display.h"
-#include "wl_resource.h"
-#include "wl_client.h"
+#include "display.h"
+#include "resource.h"
+#include "client.h"
 
 #include <memory>
 #include <set>
@@ -38,17 +38,17 @@ namespace karuta {
 
 template <typename T>
 class GlobalInstance {
-    std::set<protocol::WlResource*> rs_;
+    std::set<Resource*> rs_;
 
 protected:
-    GlobalInstance(protocol::WlDisplay& display) {
+    GlobalInstance(Display& display) {
         wl_global_create(display.get_wl_display(), T::get_wl_interface(),
                          static_cast<int>(T::version), static_cast<void*>(this),
                          &global_bind);
     }
 
-    virtual protocol::WlResource& bind(protocol::WlClient& client,
-                               uint32_t version, uint32_t id) {
+    virtual Resource& bind(Client& client, uint32_t version,
+                           uint32_t id) {
         auto resource =
             client.resource_create(T::get_wl_interface(), version, id);
         resource->set_implementation(*static_cast<T*>(this));
@@ -58,11 +58,10 @@ protected:
     }
 
 private:
-
     static void global_bind(wl_client* client, void* data, uint32_t version,
                             uint32_t id) {
         auto self = static_cast<GlobalInstance*>(data);
-        protocol::WlClient c(client);
+        Client c(client);
         self->bind(c, version, id);
     }
 };

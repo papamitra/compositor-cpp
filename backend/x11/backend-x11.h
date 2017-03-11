@@ -35,9 +35,7 @@
 
 namespace karuta {
 
-namespace protocol {
-class WlCompositor;
-}  // wayland
+class Compositor;
 
 class BackendX11 : public Backend {
     Display *display_;
@@ -48,9 +46,9 @@ class BackendX11 : public Backend {
     EGLDisplay egl_display_;
 	EGLConfig egl_config_;
 
-    class protocol::WlCompositor* compositor_;
+    class Compositor* compositor_;
 public:
-    BackendX11(protocol::WlCompositor*);
+    BackendX11(Compositor*);
 
     bool init() override;
 
