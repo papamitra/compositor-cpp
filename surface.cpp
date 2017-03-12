@@ -34,8 +34,13 @@ Surface::Surface(Client& client, uint32_t version, uint32_t id)
     : Instance(client, version, id) {
 }
 
-void Surface::frame(Client& client, Resource& resource, uint32_t callback) {
-    debug("%s\n", __func__);
+void Surface::frame(Client& client, ResourceRef& resource, uint32_t callback) {
+    debug("%s", __func__);
+}
+
+void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer, int32_t x,
+                     int32_t y) {
+    debug("%s", __func__);
 }
 
 }  // karuta

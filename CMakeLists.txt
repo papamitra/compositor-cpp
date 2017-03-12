@@ -14,6 +14,7 @@ set( SOURCE
   ${CMAKE_SOURCE_DIR}/resource.cpp
   ${CMAKE_SOURCE_DIR}/shell.cpp
   ${CMAKE_SOURCE_DIR}/surface.cpp
+  ${CMAKE_SOURCE_DIR}/buffer.cpp
   ${CMAKE_SOURCE_DIR}/xdg_shell.cpp
 )
 

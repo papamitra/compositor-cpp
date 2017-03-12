@@ -25,33 +25,22 @@
 
 #pragma once
 
-#include "xdg-shell-unstable-v6_karuta_server.h"
-
-#include "global_instance.h"
-#include "log.h"
+#include <wayland-server.h>
 
 namespace karuta {
 
-class XdgShell : public protocol::ZxdgShellV6, public GlobalInstance<XdgShell> {
+class ResourceRef {
+    wl_resource* resource_;
+
 public:
-    XdgShell(Display& dislplay);
+    ResourceRef(wl_resource* resource) : resource_(resource) {}
+    ResourceRef(const ResourceRef& rhs) : resource_(rhs.resource_) {}
 
-private:
-    void destroy(Client& client, ResourceRef& resource) override {}
+    wl_resource* get_wl_resource() { return resource_; }
 
-    void create_positioner(Client& client, ResourceRef& resource,
-                           uint32_t id) override {
-        debug("%s\n", __func__);
-    }
+    uint32_t get_version() const { return wl_resource_get_version(resource_); }
 
-    void get_xdg_surface(Client& client, ResourceRef& resource, uint32_t id,
-                         ResourceRef& surface) override {
-        debug("%s", __func__);
-    }
-
-    void pong(Client& client, ResourceRef& resource, uint32_t serial) override {
-        debug("%s", __func__);
-    }
+    operator bool() { return resource_; }
 };
 
 }  // karuta

@@ -36,7 +36,8 @@ class Client;
 
 namespace karuta {
 
-class Compositor : public protocol::WlCompositor, public GlobalInstance<Compositor> {
+class Compositor : public protocol::WlCompositor,
+                   public GlobalInstance<Compositor> {
     Display& display_;
 
 public:
@@ -44,10 +45,10 @@ public:
 
     void init();
 
-    void create_surface(Client& client, Resource& resource,
+    void create_surface(Client& client, ResourceRef& resource,
                         uint32_t id) override;
 
-    void create_region(Client& client, Resource& resource,
+    void create_region(Client& client, ResourceRef& resource,
                        uint32_t id) override;
 
     Display& display() { return display_; }

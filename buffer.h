@@ -31,14 +31,19 @@
 
 namespace karuta {
 
-class Buffer : public protocol::WlBuffer, public Instance<Buffer> {
-
+class Buffer {
+    wl_listener destroy_listener_;
+    ResourceRef resource_;
 private:
-    Buffer(Client& client, uint32_t version, uint32_t id);
+    Buffer(ResourceRef& resource) : resource_(resource){}
 
-    void destroy(Client& client, Resource& resource) {
+    void destroy(Client& client, ResourceRef& resource) {
         debug("%s", __func__);
     }
+
+    static Buffer* buffer_from_resource(ResourceRef& resource);
+
+    static void destroy_handler(wl_listener* listener, void *data);
 };
 
 }  // karuta

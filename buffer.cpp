@@ -24,11 +24,25 @@
  */
 
 #include "buffer.h"
+#include "utils.h"
 
 namespace karuta {
 
-Buffer::Buffer(Client& client, uint32_t version, uint32_t id)
-    : Instance(client, version, id) {
+Buffer* Buffer::buffer_from_resource(ResourceRef& resource) {
+    wl_listener* listener = wl_resource_get_destroy_listener(resource.get_wl_resource(), Buffer::destroy_handler);
+
+    if (listener)
+        return karuta_container_of(listener, &Buffer::destroy_listener_);
+
+    auto buffer = new Buffer{resource};
+    buffer->destroy_listener_.notify = Buffer::destroy_handler;
+    wl_resource_add_destroy_listener(resource.get_wl_resource(),
+                                     &buffer->destroy_listener_);
+    return buffer;
+}
+
+void Buffer::destroy_handler(wl_listener* listener, void *data) {
+
 }
 
 }  // karuta

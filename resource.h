@@ -32,20 +32,19 @@
 namespace karuta {
 
 class Resource {
+    friend class Client;
+
     // DO NOT have other member than resource_.
     struct wl_resource* resource_;
 
     Resource(const Resource&) = delete;
 
-public:
     Resource(struct wl_resource* resource)
         : resource_(resource) {}
+public:
 
     void set_implementation(ImplInterface& impl);
 
-    uint32_t get_version() const { return wl_resource_get_version(resource_); }
-
-    struct wl_resource* get_wl_resource() { return resource_; }
 };
 
 }  // karuta

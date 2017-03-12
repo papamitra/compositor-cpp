@@ -52,13 +52,13 @@ void Compositor::init() {
     backend->init();
 }
 
-void Compositor::create_surface(Client& client, Resource& resource,
+void Compositor::create_surface(Client& client, ResourceRef& resource,
                                 uint32_t id) {
     Surface::create(client, resource.get_version(), id);
     debug("%s\n", __func__);
 }
 
-void Compositor::create_region(Client& client, Resource& resource,
+void Compositor::create_region(Client& client, ResourceRef& resource,
                                uint32_t id) {
     debug("%s\n", __func__);
 }

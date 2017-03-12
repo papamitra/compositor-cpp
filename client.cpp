@@ -37,7 +37,7 @@ std::unique_ptr<Resource> Client::resource_create(
         return std::unique_ptr<Resource>();
     }
 
-    return std::make_unique<Resource>(resource);
+    return std::unique_ptr<Resource>(new Resource{resource});
 }
 
 }  // karuta
