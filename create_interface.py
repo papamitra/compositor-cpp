@@ -42,6 +42,7 @@ class {classname} : public karuta::ImplInterface {{
 private:
 {member_funcs}
 public:
+{enums}
 {member_event_funcs}
 {static_funcs}
 {get_interface}
@@ -135,6 +136,16 @@ def to_member_func(name, args):
     s += ') = 0;\n'
     return s
 
+def to_enum_defs(enums):
+    return ''.join(['\n' + to_enum_def(*enum) for enum in enums])
+
+def to_enum_def(name, entries):
+    s = '    enum {} {{'.format(name.title())
+    s += ''.join(['\n        {}_{} = {},'.format(name.title(), entry.attrib['name'], entry.attrib['value'])
+                  for entry in entries])
+    s += '\n    };\n'
+    return s
+
 def to_member_event_funcs(ifname, evs):
     return ''.join(['\n' + to_member_event_func(ifname, name, args)
                     for (name, args) in evs])
@@ -182,15 +193,19 @@ def parse_request(req):
 def parse_event(ev):
     return (ev.attrib['name'], [child for child in ev if child.tag == 'arg'])
 
+def parse_enum(enum):
+    return (enum.attrib['name'], [child for child in enum if child.tag == 'entry'])
+
 def parse_interface(intf):
     name = intf.attrib['name']
     version = intf.attrib.get('version', 0)
     reqs = [parse_request(child) for child in intf if child.tag == 'request']
     evs = [parse_event(child) for child in intf
            if child.tag == 'event' and child.attrib['name'] != 'error' and child.attrib['name'] != 'delete_id']
-    return (name, version, reqs, evs)
+    enums = [parse_enum(child) for child in intf if child.tag == 'enum']
+    return (name, version, reqs, evs, enums)
 
-def create_interface_instance(name, version, reqs, _):
+def create_interface_instance(name, version, reqs, _evs, _enums):
     if len(reqs) == 0: return ""
     s = 'struct {ifname}_interface {ifname}_interface_instance = {{'.format(ifname=name)
     for (funcname, args) in reqs:
@@ -218,15 +233,16 @@ def to_version(ver):
     """.format(version=ver)
 
 def create_interface(ns, intf):
-    (name, version, reqs, evs) = intf
+    (name, version, reqs, evs, enums) = intf
     s = ""
-    s += class_format.format(classname=to_class_name(name),
-                             member_funcs=to_member_funcs(reqs),
-                             member_event_funcs=to_member_event_funcs(name, evs),
-                             static_funcs=to_static_funcs(name, reqs),
-                             get_interface="" if len(reqs) == 0 else to_get_interface(name),
-                             get_wl_interface=to_get_wl_interface(name),
-                             version=to_version(version)
+    s += class_format.format(classname          = to_class_name(name),
+                             member_funcs       = to_member_funcs(reqs),
+                             enums              = to_enum_defs(enums),
+                             member_event_funcs = to_member_event_funcs(name, evs),
+                             static_funcs       = to_static_funcs(name, reqs),
+                             get_interface      = "" if len(reqs) == 0 else to_get_interface(name),
+                             get_wl_interface   = to_get_wl_interface(name),
+                             version            = to_version(version)
     )
     return s
 
