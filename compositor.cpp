@@ -55,12 +55,12 @@ void Compositor::init() {
 void Compositor::create_surface(Client& client, ResourceRef& resource,
                                 uint32_t id) {
     Surface::create(client, resource.get_version(), id);
-    debug("%s\n", __func__);
+    debug("%s", __func__);
 }
 
 void Compositor::create_region(Client& client, ResourceRef& resource,
                                uint32_t id) {
-    debug("%s\n", __func__);
+    debug("%s", __func__);
 }
 
 }  // karuta

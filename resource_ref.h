@@ -26,6 +26,7 @@
 #pragma once
 
 #include <wayland-server.h>
+#include <cassert>
 
 namespace karuta {
 
@@ -41,6 +42,12 @@ public:
     uint32_t get_version() const { return wl_resource_get_version(resource_); }
 
     operator bool() { return resource_; }
+
+    template<typename T>
+    T* user_data_to_object() {
+        assert(resource_);
+        return static_cast<T*>(wl_resource_get_user_data(resource_));
+    }
 };
 
 }  // karuta

@@ -24,11 +24,20 @@
  */
 
 #include "xdg_shell.h"
-#include "xdg-shell-unstable-v6-server-protocol.h"
+#include "xdg_surface.h"
 
 namespace karuta {
 
 XdgShell::XdgShell(Display& display) : GlobalInstance<XdgShell>(display) {
+}
+
+void XdgShell::get_xdg_surface(Client& client, ResourceRef& resource,
+                               uint32_t id, ResourceRef& surface) {
+    debug("%s", __func__);
+
+    Surface* surf = surface.user_data_to_object<Surface>();
+
+    XdgSurface::create(surf, client, resource.get_version(), id);
 }
 
 }  // karuta

@@ -25,29 +25,44 @@
 
 #pragma once
 
-#include "client.h"
-#include "resource.h"
-
-#include <functional>
+#include "xdg-shell-unstable-v6_karuta_server.h"
+#include "instance.h"
+#include "surface.h"
+#include "log.h"
 
 namespace karuta {
 
-template <typename T>
-class Instance {
-    Resource* res_;
+class XdgSurface : public protocol::ZxdgSurfaceV6, public Instance<XdgSurface> {
+    friend class Instance<XdgSurface>;
 
-protected:
-    Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
-    }
+private:
+    Surface* surface_;
+    XdgSurface(Surface* surface, Client& client, uint32_t version, uint32_t id);
 
 public:
-    template<typename... Args>
-    static T* create(Args&&... args) {
-        return new T(std::forward<Args>(args)...);
+    void destroy(Client& client, ResourceRef& resource) override {
+        debug("%s", __func__);
+    }
+
+    void get_toplevel(Client& client, ResourceRef& resource,
+                      uint32_t id) override {
+        debug("%s", __func__);
+    }
+
+    void get_popup(Client& client, ResourceRef& resource, uint32_t id,
+                   ResourceRef& parent, ResourceRef& positioner) override {
+        debug("%s", __func__);
+    }
+
+    void set_window_geometry(Client& client, ResourceRef& resource, int32_t x,
+                             int32_t y, int32_t width,
+                             int32_t height) override {
+        debug("%s", __func__);
+    }
+
+    void ack_configure(Client& client, ResourceRef& resource,
+                       uint32_t serial) override {
+        debug("%s", __func__);
     }
 };
 

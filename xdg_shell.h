@@ -41,13 +41,11 @@ private:
 
     void create_positioner(Client& client, ResourceRef& resource,
                            uint32_t id) override {
-        debug("%s\n", __func__);
+        debug("%s", __func__);
     }
 
     void get_xdg_surface(Client& client, ResourceRef& resource, uint32_t id,
-                         ResourceRef& surface) override {
-        debug("%s", __func__);
-    }
+                         ResourceRef& surface) override;
 
     void pong(Client& client, ResourceRef& resource, uint32_t serial) override {
         debug("%s", __func__);

@@ -23,32 +23,12 @@
  * SOFTWARE.
  */
 
-#pragma once
-
-#include "client.h"
-#include "resource.h"
-
-#include <functional>
+#include "xdg_surface.h"
 
 namespace karuta {
 
-template <typename T>
-class Instance {
-    Resource* res_;
-
-protected:
-    Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
-    }
-
-public:
-    template<typename... Args>
-    static T* create(Args&&... args) {
-        return new T(std::forward<Args>(args)...);
-    }
-};
+XdgSurface::XdgSurface(Surface* surface, Client& client, uint32_t version, uint32_t id)
+    : surface_(surface), Instance(client, version, id) {
+}
 
 }  // karuta
