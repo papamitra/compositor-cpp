@@ -23,28 +23,13 @@
  * SOFTWARE.
  */
 
-#include "xdg_surface.h"
 #include "xdg_toplevel.h"
-#include "array.h"
-#include "resource_ref.h"
 
 namespace karuta {
 
-XdgSurface::XdgSurface(Surface* surface, Client& client, uint32_t version,
-                       uint32_t id)
-    : surface_(surface), Instance(client, version, id) {
-}
-
-void XdgSurface::get_toplevel(Client& client, ResourceRef& resource,
-                              uint32_t id) {
-    debug("%s", __func__);
-
-    auto toplevel =
-        XdgToplevel::create(this, client, resource.get_version(), id);
-
-    Array<XdgToplevel::State> states;
-
-    XdgToplevel::send_configure(*toplevel, 250, 250, states);
+XdgToplevel::XdgToplevel(XdgSurface* surface, Client& client, uint32_t version,
+                         uint32_t id)
+    : Instance(client, version, id), surface_(surface) {
 }
 
 }  // karuta

@@ -27,6 +27,7 @@
 
 #include "client.h"
 #include "resource.h"
+#include "resource_ref.h"
 
 #include <functional>
 
@@ -49,6 +50,8 @@ public:
     static T* create(Args&&... args) {
         return new T(std::forward<Args>(args)...);
     }
+
+    operator ResourceRef() { return ResourceRef(*res_); }
 };
 
 }  // karuta

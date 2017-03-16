@@ -45,9 +45,7 @@ public:
     }
 
     void get_toplevel(Client& client, ResourceRef& resource,
-                      uint32_t id) override {
-        debug("%s", __func__);
-    }
+                      uint32_t id) override;
 
     void get_popup(Client& client, ResourceRef& resource, uint32_t id,
                    ResourceRef& parent, ResourceRef& positioner) override {

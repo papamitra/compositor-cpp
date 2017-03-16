@@ -28,6 +28,7 @@
 #include <wayland-server.h>
 
 #include "impl_interface.h"
+#include "resource_ref.h"
 
 namespace karuta {
 
@@ -45,6 +46,7 @@ public:
 
     void set_implementation(ImplInterface& impl);
 
+    operator ResourceRef() { return ResourceRef(resource_); }
 };
 
 }  // karuta

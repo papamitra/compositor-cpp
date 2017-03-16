@@ -17,6 +17,7 @@ set( SOURCE
   ${CMAKE_SOURCE_DIR}/buffer.cpp
   ${CMAKE_SOURCE_DIR}/xdg_shell.cpp
   ${CMAKE_SOURCE_DIR}/xdg_surface.cpp
+  ${CMAKE_SOURCE_DIR}/xdg_toplevel.cpp
 )
 
 find_package(PkgConfig)

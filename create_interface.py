@@ -152,7 +152,7 @@ def to_member_event_funcs(ifname, evs):
                     for (name, args) in evs])
 
 def to_member_event_func(ifname, name, args):
-    s = '    static void send_' + name + '(ResourceRef& resource_'
+    s = '    static void send_' + name + '(ResourceRef resource_'
     s += ''.join([',\n        ' + to_send_cpp_type(arg) + ' ' + arg.attrib['name'] for arg in args])
     s += ') {\n'
     s += '        {}_send_{}(resource_.get_wl_resource()'.format(ifname, name)

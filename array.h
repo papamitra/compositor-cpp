@@ -99,6 +99,8 @@ public:
         return reinterpret_cast<T*>(static_cast<char*>(array_.data) +
                                     static_cast<ptrdiff_t>(array_.size));
     }
+
+    operator ArrayRef&() { return ref_; }
 };
 
 }  // karuta
