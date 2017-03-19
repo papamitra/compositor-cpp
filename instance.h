@@ -33,8 +33,13 @@
 
 namespace karuta {
 
+class InstanceBase {
+public:
+    virtual operator ResourceRef()=0;
+};
+
 template <typename T>
-class Instance {
+class Instance : public InstanceBase {
     Resource* res_;
 
 protected:
@@ -51,7 +56,7 @@ public:
         return new T(std::forward<Args>(args)...);
     }
 
-    operator ResourceRef() { return ResourceRef(*res_); }
+    operator ResourceRef() override { return ResourceRef(*res_); }
 };
 
 }  // karuta
