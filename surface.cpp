@@ -25,6 +25,7 @@
 
 #include "surface.h"
 #include "log.h"
+#include "callback.h"
 
 #include <cstdio>
 
@@ -34,13 +35,16 @@ Surface::Surface(Client& client, uint32_t version, uint32_t id)
     : Instance(client, version, id) {
 }
 
-void Surface::frame(Client& client, ResourceRef& resource, uint32_t callback) {
-    debug("%s", __func__);
+void Surface::frame(Client& client, ResourceRef& resource,
+                    uint32_t callback) {
+    callback_.reset(Callback::create(client, 1 /* Version */, callback));
 }
 
-void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer, int32_t x,
-                     int32_t y) {
-    debug("%s", __func__);
+void Surface::commit(Client& client, ResourceRef& resource) {
+    if(callback_) {
+        callback_->send_done(0 /* TODO */);
+        callback_.reset();
+    }
 }
 
 }  // karuta

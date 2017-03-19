@@ -27,25 +27,16 @@
 
 #include "wayland_karuta_server.h"
 #include "instance.h"
-#include "log.h"
-
-#include <memory>
 
 namespace karuta {
 
-class Callback;
-class Surface : public protocol::WlSurface, public Instance<Surface> {
-    friend class Instance<Surface>;
+class Callback : public protocol::WlCallback, public Instance<Callback> {
+    friend class Instance<Callback>;
 
 private:
-    std::unique_ptr<Callback> callback_;
+    Callback(Client& client, uint32_t version, uint32_t id) :
+        Instance(client, version, id) {}
 
-    Surface(Client& client, uint32_t version, uint32_t id);
-
-    void frame(Client& client, ResourceRef& resource,
-               uint32_t callback) override;
-
-    void commit(Client& client, ResourceRef& resource) override;
 };
 
 }  // karuta

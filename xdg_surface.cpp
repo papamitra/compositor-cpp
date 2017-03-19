@@ -44,7 +44,8 @@ void XdgSurface::get_toplevel(Client& client, ResourceRef& resource,
 
     Array<XdgToplevel::State> states;
 
-    XdgToplevel::send_configure(*toplevel, 250, 250, states);
+    toplevel->send_configure(250, 250, states);
+    send_configure(1 /* TODO */);
 }
 
 }  // karuta
