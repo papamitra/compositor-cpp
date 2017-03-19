@@ -22,7 +22,7 @@ set( SOURCE
 
 find_package(PkgConfig)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++14 -g -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -g -O0")
 
 pkg_check_modules(WAYLAND_SERVER REQUIRED wayland-server)
 
