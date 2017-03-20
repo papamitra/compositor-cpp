@@ -37,6 +37,7 @@ class Surface : public protocol::WlSurface, public Instance<Surface> {
 
 private:
     Callback* callback_;
+    ResourceRef buffer_res_;
 
     Surface(Client& client, uint32_t version, uint32_t id);
 
@@ -44,6 +45,9 @@ private:
                uint32_t callback) override;
 
     void commit(Client& client, ResourceRef& resource) override;
+
+    void attach(Client& client, ResourceRef& resource, ResourceRef& buffer,
+                int32_t x, int32_t y) override;
 };
 
 }  // karuta

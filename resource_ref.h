@@ -34,7 +34,7 @@ class ResourceRef {
     wl_resource* resource_;
 
 public:
-    ResourceRef(wl_resource* resource) : resource_(resource) {}
+    ResourceRef(wl_resource* resource = nullptr) : resource_(resource) {}
     ResourceRef(const ResourceRef& rhs) : resource_(rhs.resource_) {}
 
     wl_resource* get_wl_resource() { return resource_; }
