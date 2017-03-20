@@ -30,33 +30,32 @@
 #include "resource_ref.h"
 
 #include <functional>
+#include <memory>
 
 namespace karuta {
 
 class InstanceBase {
 public:
-    virtual operator ResourceRef()=0;
+    virtual operator ResourceRef() = 0;
 };
 
 template <typename T>
 class Instance : public InstanceBase {
-    Resource* res_;
+    std::unique_ptr<Resource> res_;
 
 protected:
     Instance(Client& client, uint32_t version, uint32_t id) {
-        auto resource =
-            client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
-        res_ = resource.release();
+        res_ = client.resource_create(T::get_wl_interface(), version, id);
+        res_->set_implementation(*static_cast<T*>(this));
     }
 
 public:
-    template<typename... Args>
+    template <typename... Args>
     static T* create(Args&&... args) {
         return new T(std::forward<Args>(args)...);
     }
 
-    operator ResourceRef() override { return ResourceRef(*res_); }
+    operator ResourceRef() override { return ResourceRef(*res_.get()); }
 };
 
 }  // karuta

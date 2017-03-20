@@ -25,17 +25,25 @@
 
 #include "resource.h"
 #include "impl_interface.h"
+#include "log.h"
 
 namespace karuta {
 
 static void destroy_resource(struct wl_resource* resource) {
+    debug("destroy_resource");
     ImplInterface* impl = static_cast<ImplInterface*>(wl_resource_get_user_data(resource));
-    impl->destroy();
+    delete impl;
 }
 
 void Resource::set_implementation(ImplInterface& impl) {
     wl_resource_set_implementation(resource_, impl.get_interface(),
                                    &impl, destroy_resource);
+}
+
+Resource::~Resource() {
+    debug("delete resource");
+    wl_resource_destroy(resource_);
+    resource_ = nullptr;
 }
 
 }  // karuta

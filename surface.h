@@ -29,8 +29,6 @@
 #include "instance.h"
 #include "log.h"
 
-#include <memory>
-
 namespace karuta {
 
 class Callback;
@@ -38,7 +36,7 @@ class Surface : public protocol::WlSurface, public Instance<Surface> {
     friend class Instance<Surface>;
 
 private:
-    std::unique_ptr<Callback> callback_;
+    Callback* callback_;
 
     Surface(Client& client, uint32_t version, uint32_t id);
 

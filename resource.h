@@ -44,6 +44,8 @@ class Resource {
         : resource_(resource) {}
 public:
 
+    ~Resource();
+
     void set_implementation(ImplInterface& impl);
 
     operator ResourceRef() { return ResourceRef(resource_); }

@@ -37,13 +37,13 @@ Surface::Surface(Client& client, uint32_t version, uint32_t id)
 
 void Surface::frame(Client& client, ResourceRef& resource,
                     uint32_t callback) {
-    callback_.reset(Callback::create(client, 1 /* Version */, callback));
+    callback_ = Callback::create(client, 1 /* Version */, callback);
 }
 
 void Surface::commit(Client& client, ResourceRef& resource) {
     if(callback_) {
         callback_->send_done(0 /* TODO */);
-        callback_.reset();
+        // Callback delete itself later.
     }
 }
 
