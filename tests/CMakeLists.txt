@@ -17,6 +17,7 @@ include_directories(
 
 file(GLOB SOURCE
   src/*.cpp
+  ../buffer.cpp
   )
 
 add_executable(unit_test ${SOURCE})

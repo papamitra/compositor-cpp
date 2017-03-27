@@ -41,21 +41,19 @@ void Surface::frame(Client& client, ResourceRef& resource,
 }
 
 void Surface::commit(Client& client, ResourceRef& resource) {
+    debug("%s", __func__);
+
     if(callback_) {
         callback_->send_done(0 /* TODO */);
         // Callback delete itself later.
     }
 
-    // FIXME: 
-    if(buffer_res_) {
-        protocol::WlBuffer::send_release(buffer_res_);
-        buffer_res_ = ResourceRef();
-    }
 }
 
 void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer,
                      int32_t x, int32_t y) {
-    buffer_res_ = buffer;
+    debug("%s", __func__);
+    buffer_ref_ = Buffer::from_resource(buffer);
 }
 
 }  // karuta

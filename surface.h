@@ -28,6 +28,7 @@
 #include "wayland_karuta_server.h"
 #include "instance.h"
 #include "log.h"
+#include "buffer.h"
 
 namespace karuta {
 
@@ -37,7 +38,7 @@ class Surface : public protocol::WlSurface, public Instance<Surface> {
 
 private:
     Callback* callback_;
-    ResourceRef buffer_res_;
+    BufferRef buffer_ref_;
 
     Surface(Client& client, uint32_t version, uint32_t id);
 

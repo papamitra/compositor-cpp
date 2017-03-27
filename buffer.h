@@ -29,21 +29,97 @@
 #include "instance.h"
 #include "log.h"
 
+#include <utility>
+
 namespace karuta {
 
+class BufferRefImpl;
+class BufferRef;
+
 class Buffer {
+    friend class BufferRef;
     wl_listener destroy_listener_;
     ResourceRef resource_;
+    int busy_count_ = 0;
+
+public:
+    static BufferRef from_resource(ResourceRef& resource);
+
+    ~Buffer() {
+        // TODO:
+    }
+
 private:
-    Buffer(ResourceRef& resource) : resource_(resource){}
+    Buffer(ResourceRef& resource)
+        : resource_(resource) {}
 
     void destroy(Client& client, ResourceRef& resource) {
         debug("%s", __func__);
     }
 
-    static Buffer* buffer_from_resource(ResourceRef& resource);
+    static void destroy_handler(wl_listener* listener, void* data);
 
-    static void destroy_handler(wl_listener* listener, void *data);
+    void destroy_ref(BufferRefImpl*) {
+        assert(busy_count_ > 0);
+        busy_count_--;
+        if (busy_count_ == 0) {
+            debug("buffer release");
+            if (resource_)
+                wl_resource_queue_event(resource_.get_wl_resource(),
+                                        WL_BUFFER_RELEASE);
+        }
+    }
+
+    void add_ref(BufferRefImpl*) { busy_count_++; }
+
+public:
+    Buffer()
+        : resource_() {}  // for test
+};
+
+struct BufferRefImpl {
+    Buffer* buffer_;
+};
+
+class BufferRef {
+    BufferRefImpl* impl_;
+
+public:
+    BufferRef()
+        : impl_(nullptr) {}
+
+    explicit BufferRef(Buffer* buffer) {
+        impl_ = new BufferRefImpl{buffer};
+        if (impl_->buffer_) impl_->buffer_->add_ref(impl_);
+    }
+
+    BufferRef(const BufferRef& rhs) {
+        impl_ = new BufferRefImpl{rhs.impl_ ? rhs.impl_->buffer_ : nullptr};
+        if (impl_->buffer_) impl_->buffer_->add_ref(impl_);
+    }
+
+    BufferRef(BufferRef&& rhs)
+        : impl_(nullptr) {
+        swap(*this, rhs);
+    }
+
+    BufferRef& operator=(BufferRef& rhs) {
+        BufferRef tmp(rhs);
+        swap(*this, tmp);
+    }
+
+    BufferRef& operator=(BufferRef&& rhs) { swap(*this, rhs); }
+
+    ~BufferRef() {
+        if (!impl_) return;
+
+        if (impl_->buffer_) impl_->buffer_->destroy_ref(impl_);
+        delete impl_;
+    }
+
+    static void swap(BufferRef& lhs, BufferRef& rhs) {
+        std::swap(lhs.impl_, rhs.impl_);
+    }
 };
 
 }  // karuta
