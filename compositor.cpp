@@ -54,7 +54,7 @@ void Compositor::init() {
 
 void Compositor::create_surface(Client& client, ResourceRef& resource,
                                 uint32_t id) {
-    Surface::create(client, resource.get_version(), id);
+    Surface::create(*this, client, resource.get_version(), id);
     debug("%s", __func__);
 }
 

@@ -33,14 +33,17 @@
 namespace karuta {
 
 class Callback;
+class Compositor;
+
 class Surface : public protocol::WlSurface, public Instance<Surface> {
     friend class Instance<Surface>;
 
 private:
     Callback* callback_;
     BufferRef buffer_ref_;
+    Compositor& compositor_;
 
-    Surface(Client& client, uint32_t version, uint32_t id);
+    Surface(Compositor& compositor, Client& client, uint32_t version, uint32_t id);
 
     void frame(Client& client, ResourceRef& resource,
                uint32_t callback) override;

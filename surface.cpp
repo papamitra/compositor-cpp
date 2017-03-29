@@ -31,23 +31,23 @@
 
 namespace karuta {
 
-Surface::Surface(Client& client, uint32_t version, uint32_t id)
-    : Instance(client, version, id) {
+Surface::Surface(Compositor& compositor, Client& client, uint32_t version,
+                 uint32_t id)
+    : Instance(client, version, id)
+    , compositor_(compositor) {
 }
 
-void Surface::frame(Client& client, ResourceRef& resource,
-                    uint32_t callback) {
+void Surface::frame(Client& client, ResourceRef& resource, uint32_t callback) {
     callback_ = Callback::create(client, 1 /* Version */, callback);
 }
 
 void Surface::commit(Client& client, ResourceRef& resource) {
     debug("%s", __func__);
 
-    if(callback_) {
+    if (callback_) {
         callback_->send_done(0 /* TODO */);
         // Callback delete itself later.
     }
-
 }
 
 void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer,
