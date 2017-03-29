@@ -26,6 +26,7 @@
 #include "surface.h"
 #include "log.h"
 #include "callback.h"
+#include "compositor.h"
 
 #include <cstdio>
 
@@ -48,6 +49,9 @@ void Surface::commit(Client& client, ResourceRef& resource) {
         callback_->send_done(0 /* TODO */);
         // Callback delete itself later.
     }
+
+    compositor_.renderer().draw();
+
 }
 
 void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer,

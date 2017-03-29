@@ -40,6 +40,7 @@ namespace karuta {
 
 Compositor::Compositor(Display& display)
     : GlobalInstance(display), display_(display) {
+    renderer_ = std::make_unique<Renderer>(*this);
 }
 
 void Compositor::init() {

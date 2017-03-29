@@ -27,6 +27,7 @@
 #include "compositor.h"
 #include "display.h"
 #include "log.h"
+#include "renderer.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -86,93 +87,7 @@ bool BackendX11::egl_init() {
         return false;
     }
 
-    EGLint major, minor;
-    if (!eglInitialize(egl_display_, &major, &minor)) {
-        error("faile to initialize display\n");
-        return false;
-    }
-
-    static const EGLint opaque_attribs[] = {
-        EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,      //
-        EGL_RED_SIZE,        1,                   //
-        EGL_GREEN_SIZE,      1,                   //
-        EGL_BLUE_SIZE,       1,                   //
-        EGL_ALPHA_SIZE,      0,                   //
-        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,  //
-        EGL_NONE};
-
-    if (!egl_choose_config(opaque_attribs, NULL, 0, &egl_config_)) {
-        error("faile to choose EGL config\n");
-        return false;
-    }
-
-    auto bind_display = reinterpret_cast<PFNEGLBINDWAYLANDDISPLAYWL>(
-        eglGetProcAddress("eglBindWaylandDisplayWL"));
-    assert(bind_display);
-
-    auto wl_disp = compositor_->display().get_wl_display();
-    bind_display(egl_display_, wl_disp);
-
-    return true;
-}
-
-static int match_config_to_visual(EGLDisplay egl_display, EGLint visual_id,
-                                  EGLConfig *configs, int count) {
-    int i;
-
-    for (i = 0; i < count; ++i) {
-        EGLint id;
-
-        if (!eglGetConfigAttrib(egl_display, configs[i], EGL_NATIVE_VISUAL_ID,
-                                &id))
-            continue;
-
-        if (id == visual_id) return i;
-    }
-
-    return -1;
-}
-
-bool BackendX11::egl_choose_config(const EGLint *attribs,
-                                   const EGLint *visual_id, const int n_ids,
-                                   EGLConfig *config_out) {
-    EGLint count = 0;
-    EGLint matched = 0;
-    EGLConfig *configs;
-    int i, config_index = -1;
-
-    if (!eglGetConfigs(egl_display_, NULL, 0, &count) || count < 1) {
-        error("No EGL configs to choose from.\n");
-        return false;
-    }
-
-    configs = new EGLConfig[count]();
-    if (!configs) return false;
-
-    if (!eglChooseConfig(egl_display_, attribs, configs, count, &matched) ||
-        !matched) {
-        error("No EGL configs with appropriate attributes.\n");
-        goto out;
-    }
-
-    if (!visual_id || n_ids == 0) config_index = 0;
-
-    for (i = 0; config_index == -1 && i < n_ids; i++)
-        config_index = match_config_to_visual(egl_display_, visual_id[i],
-                                              configs, matched);
-
-    if (config_index != -1) *config_out = configs[config_index];
-
-out:
-    delete[] configs;
-    if (config_index == -1) return false;
-
-    if (i > 1)
-        debug(
-            "Unable to use first choice EGL config with id"
-            " 0x%x, succeeded with alternate id 0x%x.\n",
-            visual_id[0], visual_id[i - 1]);
-    return true;
+    return compositor_->renderer().egl_init(egl_display_, window_);
 }
 
 }  // karuta

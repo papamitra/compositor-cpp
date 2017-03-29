@@ -23,30 +23,47 @@
  * SOFTWARE.
  */
 
-#include "display.h"
-#include "compositor.h"
-#include "xdg_shell.h"
+#pragma once
 
-#include "log.h"
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
-#include <new>
+namespace karuta {
 
-int main(int argc, char *argv[])
-{
+class Compositor;
 
-    try {
-        karuta::Display display;
-        karuta::Compositor compositor(display);
+class Renderer {
+    GLuint program_;
+    GLuint position_;
+    GLuint texcoord_;
+    GLuint texture_index_;
+    GLuint texture_[1];
 
-        karuta::XdgShell xdg_shell(display);
+    EGLDisplay egl_display_;
+	EGLConfig egl_config_;
 
-        compositor.init();
+    EGLSurface surface_;
+    EGLContext context_;
 
-        display.run();
-    } catch (const std::bad_alloc& e) {
-        karuta::error("bad alloc: %s\n", e.what());
-        exit(1);
-    }
+    EGLNativeWindowType native_window_;
 
-    return 0;
-}
+    Compositor& compositor_;
+public:
+    Renderer(Compositor& compositor);
+    ~Renderer();
+
+    static Renderer& get_instance();
+
+    bool egl_init(EGLDisplay egl_display, EGLNativeWindowType window);
+
+    bool create_surface();
+
+    void draw();
+
+private:
+    void load_image();
+
+};
+
+}  // karuta

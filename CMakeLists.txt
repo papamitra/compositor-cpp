@@ -15,6 +15,7 @@ set( SOURCE
   ${CMAKE_SOURCE_DIR}/shell.cpp
   ${CMAKE_SOURCE_DIR}/surface.cpp
   ${CMAKE_SOURCE_DIR}/buffer.cpp
+  ${CMAKE_SOURCE_DIR}/renderer.cpp
   ${CMAKE_SOURCE_DIR}/xdg_shell.cpp
   ${CMAKE_SOURCE_DIR}/xdg_surface.cpp
   ${CMAKE_SOURCE_DIR}/xdg_toplevel.cpp
@@ -44,6 +45,8 @@ add_executable(compositor
 target_link_libraries(compositor
   ${WAYLAND_SERVER_LIBRARIES}
   -ldl
+  -lGLESv2
+  -lEGL
   )
 
 add_dependencies(compositor

@@ -42,9 +42,7 @@ class BackendX11 : public Backend {
     xcb_connection_t *conn_;
     xcb_screen_t *screen_;
     xcb_window_t window_;
-
     EGLDisplay egl_display_;
-	EGLConfig egl_config_;
 
     class Compositor* compositor_;
 public:
@@ -55,8 +53,6 @@ public:
 private:
     bool egl_init();
 
-    bool egl_choose_config(const EGLint *attribs, const EGLint *visual_id,
-                           const int n_ids, EGLConfig *config_out);
 };
 
 }  // karuta

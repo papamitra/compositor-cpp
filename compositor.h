@@ -29,6 +29,10 @@
 
 #include "global_instance.h"
 
+#include "renderer.h"
+
+#include <memory>
+
 namespace karuta {
 class Display;
 class Client;
@@ -39,6 +43,7 @@ namespace karuta {
 class Compositor : public protocol::WlCompositor,
                    public GlobalInstance<Compositor> {
     Display& display_;
+    std::unique_ptr<Renderer> renderer_;
 
 public:
     Compositor(Display& display);
@@ -52,6 +57,8 @@ public:
                        uint32_t id) override;
 
     Display& display() { return display_; }
+
+    Renderer& renderer() { return *renderer_.get(); }
 };
 
 }  // karuta
