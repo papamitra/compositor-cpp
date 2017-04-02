@@ -25,6 +25,7 @@
 
 #include "renderer.h"
 #include "compositor.h"
+#include "surface.h"
 #include "log.h"
 
 #include <cstdlib>
@@ -115,6 +116,9 @@ GLuint create_program() {
     return program;
 }
 
+PFNEGLCREATEIMAGEKHRPROC create_image;
+PFNEGLQUERYWAYLANDBUFFERWL query_buffer;
+
 }
 
 namespace karuta {
@@ -135,6 +139,9 @@ bool Renderer::egl_init(EGLDisplay egl_display, EGLNativeWindowType window) {
 
     auto wl_disp = compositor_.display().get_wl_display();
     bind_display(egl_display_, wl_disp);
+
+    create_image = reinterpret_cast<PFNEGLCREATEIMAGEKHRPROC>(eglGetProcAddress("eglCreateImageKHR"));
+    query_buffer = reinterpret_cast<PFNEGLQUERYWAYLANDBUFFERWL>(eglGetProcAddress("eglQueryWaylandBufferWL"));
 
 // TODO:
     create_surface();
@@ -185,7 +192,22 @@ void Renderer::load_image() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-void Renderer::draw() {
+void Renderer::draw(Surface& surface) {
+
+    BufferRef buffer = surface.buffer();
+    if (!buffer) {
+        warn("buffer is null");
+        return;
+    }
+
+    ResourceRef res = buffer.get()->resource();
+
+    int32_t width;
+    query_buffer(egl_display_, res.get_wl_resource(),
+                 EGL_WIDTH, &width);
+
+    warn("Renderer::draw width=%d", width);
+
     load_image();
 
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);

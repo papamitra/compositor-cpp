@@ -50,7 +50,7 @@ void Surface::commit(Client& client, ResourceRef& resource) {
         // Callback delete itself later.
     }
 
-    compositor_.renderer().draw();
+    compositor_.renderer().draw(*this);
 
 }
 

@@ -52,6 +52,9 @@ private:
 
     void attach(Client& client, ResourceRef& resource, ResourceRef& buffer,
                 int32_t x, int32_t y) override;
+
+public:
+    BufferRef buffer() { return buffer_ref_; }
 };
 
 }  // karuta

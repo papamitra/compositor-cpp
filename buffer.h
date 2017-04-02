@@ -75,6 +75,8 @@ private:
 public:
     Buffer()
         : resource_() {}  // for test
+
+    ResourceRef resource() { return resource_; }
 };
 
 struct BufferRefImpl {
@@ -119,6 +121,15 @@ public:
 
     static void swap(BufferRef& lhs, BufferRef& rhs) {
         std::swap(lhs.impl_, rhs.impl_);
+    }
+
+    Buffer* get() {
+        return impl_->buffer_;
+    }
+
+    operator bool() {
+        if (!impl_) return false;
+        return !!impl_->buffer_;
     }
 };
 

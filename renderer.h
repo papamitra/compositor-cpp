@@ -32,6 +32,7 @@
 namespace karuta {
 
 class Compositor;
+class Surface;
 
 class Renderer {
     GLuint program_;
@@ -59,7 +60,7 @@ public:
 
     bool create_surface();
 
-    void draw();
+    void draw(Surface& surface);
 
 private:
     void load_image();
