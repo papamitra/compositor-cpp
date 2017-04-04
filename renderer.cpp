@@ -31,6 +31,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <string>
+#include <GLES2/gl2ext.h>
 
 namespace {
 
@@ -116,8 +117,19 @@ GLuint create_program() {
     return program;
 }
 
+PFNGLEGLIMAGETARGETTEXTURE2DOESPROC image_target_texture_2d;
 PFNEGLCREATEIMAGEKHRPROC create_image;
+PFNEGLDESTROYIMAGEKHRPROC destroy_image;
 PFNEGLQUERYWAYLANDBUFFERWL query_buffer;
+
+void load_image(EGLImageKHR image) {
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    image_target_texture_2d(GL_TEXTURE_2D, image);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
 
 }
 
@@ -140,8 +152,11 @@ bool Renderer::egl_init(EGLDisplay egl_display, EGLNativeWindowType window) {
     auto wl_disp = compositor_.display().get_wl_display();
     bind_display(egl_display_, wl_disp);
 
+    image_target_texture_2d = reinterpret_cast<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>(eglGetProcAddress("glEGLImageTargetTexture2DOES"));
+
     create_image = reinterpret_cast<PFNEGLCREATEIMAGEKHRPROC>(eglGetProcAddress("eglCreateImageKHR"));
     query_buffer = reinterpret_cast<PFNEGLQUERYWAYLANDBUFFERWL>(eglGetProcAddress("eglQueryWaylandBufferWL"));
+    destroy_image = reinterpret_cast<PFNEGLDESTROYIMAGEKHRPROC>(eglGetProcAddress("eglDestroyImageKHR"));
 
 // TODO:
     create_surface();
@@ -175,23 +190,6 @@ Renderer::~Renderer() {
     glDeleteProgram(program_);
 }
 
-void Renderer::load_image() {
-    static const unsigned char buffer[] = {
-        0xff, 0xff, 0xff,
-        0x00, 0x00, 0xff,
-        0x00, 0xff, 0x00,
-        0xff, 0x00, 0x00,
-    };
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2 /* width */ , 2 /* height */,
-                    0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-}
-
 void Renderer::draw(Surface& surface) {
 
     BufferRef buffer = surface.buffer();
@@ -208,7 +206,12 @@ void Renderer::draw(Surface& surface) {
 
     warn("Renderer::draw width=%d", width);
 
-    load_image();
+    EGLint attribs[] = {EGL_WAYLAND_PLANE_WL, 0 /* TODO */, EGL_NONE};
+    EGLImageKHR image = create_image(egl_display_, EGL_NO_CONTEXT,
+                                     EGL_WAYLAND_BUFFER_WL, res.get_wl_resource(), attribs);
+    assert(image != EGL_NO_IMAGE_KHR);
+
+    load_image(image);
 
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

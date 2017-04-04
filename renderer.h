@@ -62,9 +62,6 @@ public:
 
     void draw(Surface& surface);
 
-private:
-    void load_image();
-
 };
 
 }  // karuta
