@@ -49,7 +49,7 @@ void Surface::commit(Client& client, ResourceRef& resource) {
 
     if (callback_) {
         callback_->send_done(0 /* TODO */);
-        // Callback delete itself later.
+        Callback::destroy(callback_);
     }
 
     compositor_.renderer().draw(*this);

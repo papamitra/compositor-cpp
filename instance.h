@@ -50,12 +50,21 @@ protected:
     }
 
 public:
+    virtual ~Instance(){}
+
     template <typename... Args>
     static T* create(Args&&... args) {
         return new T(std::forward<Args>(args)...);
     }
 
     operator ResourceRef() override { return ResourceRef(*res_.get()); }
+
+    static void destroy(Instance* instance) {
+        if (!instance) return;
+        Resource* res = instance->res_.release();
+        delete res;
+    }
+
 };
 
 }  // karuta
