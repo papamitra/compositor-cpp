@@ -35,6 +35,8 @@ namespace karuta {
 Surface::Surface(Compositor& compositor, Client& client, uint32_t version,
                  uint32_t id)
     : Instance(client, version, id)
+    , callback_()
+    , buffer_ref_()
     , compositor_(compositor) {
 }
 
@@ -51,7 +53,6 @@ void Surface::commit(Client& client, ResourceRef& resource) {
     }
 
     compositor_.renderer().draw(*this);
-
 }
 
 void Surface::attach(Client& client, ResourceRef& resource, ResourceRef& buffer,
