@@ -30,11 +30,13 @@
 namespace karuta {
 
 BufferRef Buffer::from_resource(ResourceRef& resource) {
-    wl_listener* listener = wl_resource_get_destroy_listener(resource.get_wl_resource(), Buffer::destroy_handler);
+    wl_listener* listener = wl_resource_get_destroy_listener(
+        resource.get_wl_resource(), Buffer::destroy_handler);
 
     if (listener) {
         debug("buffer already created");
-        Buffer* buffer = karuta_container_of(listener, &Buffer::destroy_listener_);
+        Buffer* buffer =
+            karuta_container_of(listener, &Buffer::destroy_listener_);
         return BufferRef{buffer};
     }
 
@@ -45,7 +47,7 @@ BufferRef Buffer::from_resource(ResourceRef& resource) {
     return BufferRef{buffer};
 }
 
-void Buffer::destroy_handler(wl_listener* listener, void *data) {
+void Buffer::destroy_handler(wl_listener* listener, void* data) {
     debug("%s", __func__);
     Buffer* buffer = karuta_container_of(listener, &Buffer::destroy_listener_);
 
