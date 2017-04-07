@@ -51,7 +51,7 @@ protected:
                            uint32_t id) {
         auto resource =
             client.resource_create(T::get_wl_interface(), version, id);
-        resource->set_implementation(*static_cast<T*>(this));
+        resource->set_implementation(*static_cast<T*>(this), false);
         auto resp = resource.release();
         rs_.insert(resp);
         return *resp;

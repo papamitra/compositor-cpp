@@ -42,11 +42,11 @@ class Resource {
 
     Resource(struct wl_resource* resource)
         : resource_(resource) {}
-public:
 
+public:
     ~Resource();
 
-    void set_implementation(ImplInterface& impl);
+    void set_implementation(ImplInterface& impl, bool delete_with_destroy);
 
     operator ResourceRef() { return ResourceRef(resource_); }
 };

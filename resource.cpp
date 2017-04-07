@@ -35,9 +35,13 @@ static void destroy_resource(struct wl_resource* resource) {
     delete impl;
 }
 
-void Resource::set_implementation(ImplInterface& impl) {
-    wl_resource_set_implementation(resource_, impl.get_interface(),
-                                   &impl, destroy_resource);
+void Resource::set_implementation(ImplInterface& impl, bool delete_with_destroy) {
+    if (delete_with_destroy)
+        wl_resource_set_implementation(resource_, impl.get_interface(),
+                                       &impl, destroy_resource);
+    else
+        wl_resource_set_implementation(resource_, impl.get_interface(),
+                                       &impl, nullptr);
 }
 
 Resource::~Resource() {

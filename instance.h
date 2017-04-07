@@ -46,7 +46,7 @@ class Instance : public InstanceBase {
 protected:
     Instance(Client& client, uint32_t version, uint32_t id) {
         res_ = client.resource_create(T::get_wl_interface(), version, id);
-        res_->set_implementation(*static_cast<T*>(this));
+        res_->set_implementation(*static_cast<T*>(this), true);
     }
 
 public:
